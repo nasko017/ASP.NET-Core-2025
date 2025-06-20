@@ -11,13 +11,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{41F9803B-0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{7C9A3F6C-CB14-4ACA-9980-F7B28B217712}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneFlip.Data", "PhoneFlip.Data\PhoneFlip.Data.csproj", "{20601901-1851-4E18-8EEA-01CD6C916B1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneFlip.Data", "PhoneFlip.Data\PhoneFlip.Data.csproj", "{20601901-1851-4E18-8EEA-01CD6C916B1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneFlip.Data.Models", "PhoneFlip.Data.Models\PhoneFlip.Data.Models.csproj", "{490E70D1-136B-4482-AE2F-40C7B65F0F71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneFlip.Data.Models", "PhoneFlip.Data.Models\PhoneFlip.Data.Models.csproj", "{490E70D1-136B-4482-AE2F-40C7B65F0F71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneFlip.Services.Data", "PhoneFlip.Services.Data\PhoneFlip.Services.Data.csproj", "{01C541F0-93D7-4B14-8D93-904E1F88BB14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneFlip.Services.Data", "PhoneFlip.Services.Data\PhoneFlip.Services.Data.csproj", "{01C541F0-93D7-4B14-8D93-904E1F88BB14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneFlip.Services.Mapping", "PhoneFlip.Services.Mapping\PhoneFlip.Services.Mapping.csproj", "{0CA4DD7C-5531-4598-909B-865A183D5A9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneFlip.Services.Mapping", "PhoneFlip.Services.Mapping\PhoneFlip.Services.Mapping.csproj", "{0CA4DD7C-5531-4598-909B-865A183D5A9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneFlip.Common", "PhoneFlip.Common\PhoneFlip.Common.csproj", "{A0B975BE-6C3F-4637-ABD4-9ED6807F27AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{0CA4DD7C-5531-4598-909B-865A183D5A9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CA4DD7C-5531-4598-909B-865A183D5A9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CA4DD7C-5531-4598-909B-865A183D5A9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0B975BE-6C3F-4637-ABD4-9ED6807F27AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0B975BE-6C3F-4637-ABD4-9ED6807F27AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0B975BE-6C3F-4637-ABD4-9ED6807F27AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0B975BE-6C3F-4637-ABD4-9ED6807F27AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
