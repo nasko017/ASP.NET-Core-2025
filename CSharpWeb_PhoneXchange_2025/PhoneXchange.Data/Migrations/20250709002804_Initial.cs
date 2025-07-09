@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PhoneXchange.Web.Data.Migrations
+namespace PhoneXchange.Data.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration

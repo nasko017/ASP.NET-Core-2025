@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-PhoneXchange.Web-722c1b57-4c3b-44c2-920a-66bff6f72e6f</UserSecretsId>
+    <UserSecretsId>aspnet-PhoneXchange-1b1f8d13-2833-4be6-9e68-1dbb3f4f006f</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿
+﻿using System.Numerics;
 
 namespace PhoneXchange.Data.Models
 {
@@ -6,7 +6,6 @@ namespace PhoneXchange.Data.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-
         public virtual ICollection<Phone> Phones { get; set; } = new List<Phone>();
     }
 

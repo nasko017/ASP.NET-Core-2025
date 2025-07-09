@@ -1,5 +1,4 @@
-﻿
-namespace PhoneXchange.Data.Models
+﻿namespace PhoneXchange.Data.Models
 {
     public class Phone
     {

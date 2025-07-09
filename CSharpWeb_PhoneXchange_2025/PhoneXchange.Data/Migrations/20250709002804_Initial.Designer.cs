@@ -9,10 +9,10 @@ using PhoneXchange.Data;
 
 #nullable disable
 
-namespace PhoneXchange.Web.Data.Migrations
+namespace PhoneXchange.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250708211937_Initial")]
+    [Migration("20250709002804_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

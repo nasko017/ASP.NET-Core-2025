@@ -8,7 +8,7 @@ using PhoneXchange.Data;
 
 #nullable disable
 
-namespace PhoneXchange.Web.Data.Migrations
+namespace PhoneXchange.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot

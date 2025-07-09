@@ -5,10 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PhoneXchange.Data;
-using PhoneXchange.Web.Data;
 using System;
 
-namespace PhoneXchange.Web.Data.Migrations
+namespace PhoneXchange.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("00000000000000_CreateIdentitySchema")]
