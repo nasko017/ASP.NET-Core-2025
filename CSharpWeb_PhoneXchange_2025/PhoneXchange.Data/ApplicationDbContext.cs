@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PhoneXchange.Data.Models;
+using System.Numerics;
 
-namespace PhoneXchange.Data
+namespace PhoneXchange.Web.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
@@ -10,7 +11,6 @@ namespace PhoneXchange.Data
             : base(options)
         {
         }
-
         public virtual DbSet<Ad> Ads { get; set; }
         public virtual DbSet<Phone> Phones { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }

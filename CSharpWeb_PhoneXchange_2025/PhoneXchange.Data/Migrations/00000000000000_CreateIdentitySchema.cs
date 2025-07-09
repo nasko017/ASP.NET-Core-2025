@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 
-namespace PhoneXchange.Data.Migrations
+namespace PhoneXchange.Web.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

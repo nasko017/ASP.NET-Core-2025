@@ -1,4 +1,4 @@
-namespace PhoneXchange.Models
+namespace PhoneXchange.Web.Models
 {
     public class ErrorViewModel
     {

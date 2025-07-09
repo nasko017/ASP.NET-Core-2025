@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using PhoneXchange.Models;
+using PhoneXchange.Web.Models;
 using System.Diagnostics;
 
-namespace PhoneXchange.Controllers
+namespace PhoneXchange.Web.Controllers
 {
     public class HomeController : Controller
     {

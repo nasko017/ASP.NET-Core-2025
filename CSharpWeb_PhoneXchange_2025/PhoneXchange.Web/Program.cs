@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PhoneXchange.Data;
+using PhoneXchange.Web.Data;
 
-namespace PhoneXchange
+namespace PhoneXchange.Web
 {
     public class Program
     {

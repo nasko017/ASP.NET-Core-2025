@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PhoneXchange.Data;
+using PhoneXchange.Web.Data;
 
 #nullable disable
 
-namespace PhoneXchange.Data.Migrations
+namespace PhoneXchange.Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250709002804_Initial")]
+    [Migration("20250709011704_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
