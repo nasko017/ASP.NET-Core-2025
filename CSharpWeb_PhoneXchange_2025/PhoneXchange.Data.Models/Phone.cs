@@ -8,13 +8,20 @@ namespace PhoneXchange.Data.Models
 {
     public class Phone
     {
-        public Guid Id { get; set; }
-        public string Model { get; set; }
-        public string Specifications { get; set; }
+        public int Id { get; set; }
 
-        public Guid BrandId { get; set; }
-        public virtual Brand Brand { get; set; }
+        public string Model { get; set; } = null!;
 
-        public virtual ICollection<Ad> Ads { get; set; } = new List<Ad>();
+        public string OS { get; set; } = null!;
+
+        public bool IsNew { get; set; }
+
+        public int AdId { get; set; }
+        public virtual Ad Ad { get; set; } = null!;
+
+        public int BrandId { get; set; }
+        public virtual Brand Brand { get; set; } = null!;
+
+        public virtual ICollection<PhoneImage> Images { get; set; } = new List<PhoneImage>();
     }
 }

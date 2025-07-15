@@ -1,22 +1,28 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace PhoneXchange.Data.Models
 {
     public class Ad
     {
-        public Guid Id { get; set; }
-        public string Title { get; set; }
+        public int Id { get; set; }
+
+        public string Title { get; set; } = null!;
+
+        public string Description { get; set; }=null!;
+
         public decimal Price { get; set; }
-        public string Description { get; set; }
-        public bool IsSold { get; set; }
-        public DateTime CreatedOn { get; set; }
 
-        public Guid PhoneId { get; set; }
-        public virtual Phone Phone { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
 
-        public string SellerId { get; set; }
-        public virtual IdentityUser Seller { get; set; }
+        public bool IsDeleted { get; set; } = false;
+
+        public string OwnerId { get; set; }=null!;
+        public virtual IdentityUser Owner { get; set; } = null!;
+
+        public virtual Phone Phone { get; set; } = null!;
 
         public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
+        public virtual ICollection<FavoriteAd> Favorites { get; set; } = new List<FavoriteAd>();
     }
 }

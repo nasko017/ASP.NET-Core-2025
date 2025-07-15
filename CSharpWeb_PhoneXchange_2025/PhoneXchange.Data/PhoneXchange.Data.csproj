@@ -12,7 +12,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PhoneXchange.Data.Common\PhoneXchange.Data.Common.csproj" />
     <ProjectReference Include="..\PhoneXchange.Data.Models\PhoneXchange.Data.Models.csproj" />
+    <ProjectReference Include="..\PhoneXchange.GCommon\PhoneXchange.GCommon.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

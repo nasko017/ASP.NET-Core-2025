@@ -3,15 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneXchange.Web", "PhoneXchange.Web\PhoneXchange.Web.csproj", "{7CB5A035-C303-4F2F-8431-0C46DC598E51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneXchange.Web", "PhoneXchange.Web\PhoneXchange.Web.csproj", "{7CB5A035-C303-4F2F-8431-0C46DC598E51}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{CF84812C-6748-42CA-B5FF-0EA9DE85A336}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{D2360DEC-F611-4AAF-A0C4-520F1E6E00B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneXchange.Data", "PhoneXchange.Data\PhoneXchange.Data.csproj", "{42C63C6F-7221-4A3B-85E2-C2708C1B4F9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneXchange.Data", "PhoneXchange.Data\PhoneXchange.Data.csproj", "{42C63C6F-7221-4A3B-85E2-C2708C1B4F9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneXchange.Data.Models", "PhoneXchange.Data.Models\PhoneXchange.Data.Models.csproj", "{64DB14C8-8AB2-46FD-87D2-22E5E779D771}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneXchange.Data.Models", "PhoneXchange.Data.Models\PhoneXchange.Data.Models.csproj", "{64DB14C8-8AB2-46FD-87D2-22E5E779D771}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneXchange.Data.Common", "PhoneXchange.Data.Common\PhoneXchange.Data.Common.csproj", "{D8370802-F54C-40A0-AC35-4A06B30E410E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneXchange.GCommon", "PhoneXchange.GCommon\PhoneXchange.GCommon.csproj", "{F40845DD-5EE6-4B4B-BA50-C03CB5F53371}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{29A78C1D-A6CD-471C-8B74-0704ED01AB2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +37,14 @@ Global
 		{64DB14C8-8AB2-46FD-87D2-22E5E779D771}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64DB14C8-8AB2-46FD-87D2-22E5E779D771}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64DB14C8-8AB2-46FD-87D2-22E5E779D771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8370802-F54C-40A0-AC35-4A06B30E410E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8370802-F54C-40A0-AC35-4A06B30E410E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8370802-F54C-40A0-AC35-4A06B30E410E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8370802-F54C-40A0-AC35-4A06B30E410E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F40845DD-5EE6-4B4B-BA50-C03CB5F53371}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F40845DD-5EE6-4B4B-BA50-C03CB5F53371}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F40845DD-5EE6-4B4B-BA50-C03CB5F53371}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F40845DD-5EE6-4B4B-BA50-C03CB5F53371}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +53,7 @@ Global
 		{7CB5A035-C303-4F2F-8431-0C46DC598E51} = {CF84812C-6748-42CA-B5FF-0EA9DE85A336}
 		{42C63C6F-7221-4A3B-85E2-C2708C1B4F9D} = {D2360DEC-F611-4AAF-A0C4-520F1E6E00B8}
 		{64DB14C8-8AB2-46FD-87D2-22E5E779D771} = {D2360DEC-F611-4AAF-A0C4-520F1E6E00B8}
+		{D8370802-F54C-40A0-AC35-4A06B30E410E} = {D2360DEC-F611-4AAF-A0C4-520F1E6E00B8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0A4C44A4-AFB7-4820-B3E0-A371F9D2708F}
