@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PhoneXchange.Services.Core;
+using PhoneXchange.Services.Core.Interfaces;
 using PhoneXchange.Web.ViewModels;
 using System.Diagnostics;
 
@@ -6,16 +9,22 @@ namespace PhoneXchange.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        //private readonly ILogger<HomeController> _logger;
+        private readonly IAdService adService;
+        public HomeController(IAdService _adService)
         {
-            _logger = logger;
+            adService = _adService;
         }
+        //public HomeController(ILogger<HomeController> logger)
+        //{
+        //    _logger = logger;
+        //}
 
-        public IActionResult Index()
+        [AllowAnonymous]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var ads = await adService.GetAllAsync();
+            return View(ads);
         }
 
         public IActionResult Privacy()

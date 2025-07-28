@@ -1,0 +1,30 @@
+﻿@model PhoneXchange.Web.ViewModels.Ad.AdViewModel
+
+@{
+    ViewData["Title"] = "Изтрий обява";
+}
+
+<h2>Изтрий обява</h2>
+<div class="alert alert-warning">
+    <strong>Сигурен ли си, че искаш да изтриеш тази обява?</strong>
+</div>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Заглавие</dt>
+        <dd class="col-sm-10">@Model.Title</dd>
+
+        <dt class="col-sm-2">Описание</dt>
+        <dd class="col-sm-10">@Model.Description</dd>
+
+        <dt class="col-sm-2">Цена</dt>
+        <dd class="col-sm-10">@Model.Price лв.</dd>
+    </dl>
+</div>
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Изтрий</button>
+    <a asp-action="Index" class="btn btn-secondary">Отказ</a>
+</form>

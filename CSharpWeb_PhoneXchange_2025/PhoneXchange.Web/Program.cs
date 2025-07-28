@@ -3,6 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using PhoneXchange.Data.Seeding.Interfaces;
 using PhoneXchange.Data.Seeding;
 using PhoneXchange.Web.Data;
+using PhoneXchange.Data.Repository.Interfaces;
+using PhoneXchange.Data.Repository;
+using PhoneXchange.Services.Core.Interfaces;
+using PhoneXchange.Services.Core;
+using System.Globalization;
 
 namespace PhoneXchange.Web
 {
@@ -33,10 +38,22 @@ namespace PhoneXchange.Web
 
             builder.Services.AddScoped<ISeeder, ApplicationDbSeeder>();
 
+            builder.Services.AddScoped<IAdRepository, AdRepository>();
+            builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+
+
+
+            builder.Services.AddScoped<IAdService, AdService>();
+            builder.Services.AddScoped<IBrandService, BrandService>();
+
+
+
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 
             var app = builder.Build();
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -62,8 +79,6 @@ namespace PhoneXchange.Web
                 var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
                 await seeder.SeedAsync();
             }
-
-  
 
             app.MapControllerRoute(
                 name: "default",

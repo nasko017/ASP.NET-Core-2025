@@ -1,0 +1,37 @@
+﻿@model PhoneXchange.Web.ViewModels.Phone.PhoneCreateViewModel
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div class="mb-2">
+        <label asp-for="Model"></label>
+        <input asp-for="Model" class="form-control" />
+        <span asp-validation-for="Model" class="text-danger"></span>
+    </div>
+    <div class="mb-2">
+        <label asp-for="OS"></label>
+        <input asp-for="OS" class="form-control" />
+        <span asp-validation-for="OS" class="text-danger"></span>
+    </div>
+    <div class="mb-2">
+        <label asp-for="BrandId"></label>
+        <select asp-for="BrandId" class="form-control">
+            <option value="">Избери марка</option>
+            @foreach (var brand in ViewBag.Brands)
+            {
+                <option value="@brand.Id">@brand.Name</option>
+            }
+        </select>
+        <span asp-validation-for="BrandId" class="text-danger"></span>
+    </div>
+    <div class="mb-2">
+        <label asp-for="IsNew"></label>
+        <input asp-for="IsNew" class="form-check-input" type="checkbox" />
+        <span asp-validation-for="IsNew" class="text-danger"></span>
+    </div>
+    <!-- За снимки: -->
+    <div class="mb-2">
+        <label>Image URLs (по един на ред)</label>
+        <textarea name="ImageUrls" class="form-control"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Добави телефон</button>
+</form>

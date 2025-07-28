@@ -1,0 +1,20 @@
+﻿@model PhoneXchange.Web.ViewModels.Ad.AdViewModel
+
+@{
+    ViewData["Title"] = "Детайли за обява";
+}
+
+<h2>Детайли за обява</h2>
+
+<div class="card" style="max-width:500px;">
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <img src="@Model.ImageUrl" class="card-img-top" alt="Снимка" style="max-height:300px; object-fit:contain;" />
+    }
+    <div class="card-body">
+        <h4 class="card-title">@Model.Title</h4>
+        <p class="card-text"><strong>Описание:</strong> @Model.Description</p>
+        <p class="card-text"><strong>Цена:</strong> @Model.Price лв.</p>
+        <a href="@Url.Action("Index", "Ads")" class="btn btn-secondary">⬅️ Назад към всички обяви</a>
+    </div>
+</div>

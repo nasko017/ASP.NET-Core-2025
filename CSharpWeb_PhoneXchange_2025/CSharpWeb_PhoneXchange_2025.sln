@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneXchange.GCommon", "Pho
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{29A78C1D-A6CD-471C-8B74-0704ED01AB2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneXchange.Web.ViewModels", "PhoneXchange.Web.ViewModels\PhoneXchange.Web.ViewModels.csproj", "{774B71A7-F1F1-4873-91C1-952C9CF47206}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneXchange.Web.ViewModels", "PhoneXchange.Web.ViewModels\PhoneXchange.Web.ViewModels.csproj", "{774B71A7-F1F1-4873-91C1-952C9CF47206}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneXchange.Services.Core", "PhoneXchange.Services.Core\PhoneXchange.Services.Core.csproj", "{FE4DE76A-14B9-467D-B710-F38E14037849}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{774B71A7-F1F1-4873-91C1-952C9CF47206}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{774B71A7-F1F1-4873-91C1-952C9CF47206}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{774B71A7-F1F1-4873-91C1-952C9CF47206}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE4DE76A-14B9-467D-B710-F38E14037849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE4DE76A-14B9-467D-B710-F38E14037849}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE4DE76A-14B9-467D-B710-F38E14037849}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE4DE76A-14B9-467D-B710-F38E14037849}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +67,7 @@ Global
 		{64DB14C8-8AB2-46FD-87D2-22E5E779D771} = {D2360DEC-F611-4AAF-A0C4-520F1E6E00B8}
 		{D8370802-F54C-40A0-AC35-4A06B30E410E} = {D2360DEC-F611-4AAF-A0C4-520F1E6E00B8}
 		{774B71A7-F1F1-4873-91C1-952C9CF47206} = {CF84812C-6748-42CA-B5FF-0EA9DE85A336}
+		{FE4DE76A-14B9-467D-B710-F38E14037849} = {29A78C1D-A6CD-471C-8B74-0704ED01AB2D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0A4C44A4-AFB7-4820-B3E0-A371F9D2708F}

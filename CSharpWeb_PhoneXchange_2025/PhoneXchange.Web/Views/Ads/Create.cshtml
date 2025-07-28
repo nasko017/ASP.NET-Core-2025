@@ -1,0 +1,75 @@
+﻿@model PhoneXchange.Web.ViewModels.Ad.AdCreateViewModel
+
+@{
+    ViewData["Title"] = "Създай нова обява";
+}
+
+<h2 class="mt-4">Създай нова обява</h2>
+
+<form asp-action="Create" method="post" class="mt-3">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-2">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="Model" class="form-label"></label>
+        <input asp-for="Model" class="form-control" />
+        <span asp-validation-for="Model" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="OS" class="form-label"></label>
+        <input asp-for="OS" class="form-control" />
+        <span asp-validation-for="OS" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="IsNew" class="form-label">Състояние</label>
+        <select asp-for="IsNew" class="form-select">
+            <option value="true">Ново</option>
+            <option value="false">Употребявано</option>
+        </select>
+        <span asp-validation-for="IsNew" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="BrandId" class="form-label">Марка</label>
+        <select asp-for="BrandId" class="form-select">
+            @foreach (var brand in ViewBag.Brands)
+            {
+                <option value="@brand.Id">@brand.Name</option>
+            }
+        </select>
+        <span asp-validation-for="BrandId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="ImageUrl" class="form-label">Снимка (URL)</label>
+        <input asp-for="ImageUrl" class="form-control" />
+        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Създай</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

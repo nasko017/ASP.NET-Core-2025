@@ -1,0 +1,48 @@
+﻿@model IEnumerable<PhoneXchange.Web.ViewModels.Ad.AdViewModel>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    var currentUserId = UserManager.GetUserId(User);
+    ViewData["Title"] = "Всички обяви";
+}
+
+<h2>Всички обяви</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Заглавие</th>
+            <th>Описание</th>
+            <th>Цена</th>
+            <th>Снимка</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ad in Model)
+        {
+            <tr>
+                <td>@ad.Title</td>
+                <td>@ad.Description</td>
+                <td>@ad.Price лв.</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(ad.ImageUrl))
+                    {
+                        <img src="@ad.ImageUrl" alt="Снимка" style="max-width:100px;" />
+                    }
+                </td>
+                <td>
+                    <a asp-controller="Ads" asp-action="Details" asp-route-id="@ad.Id" class="btn btn-sm btn-info">Детайли</a>
+                    @if (ad.OwnerId == currentUserId || User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Ads" asp-action="Edit" asp-route-id="@ad.Id" class="btn btn-sm btn-warning">Редакция</a>
+                        <a asp-controller="Ads" asp-action="Delete" asp-route-id="@ad.Id" class="btn btn-sm btn-danger">Изтрий</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-controller="Ads" asp-action="Create" class="btn btn-primary mt-3">Добави нова обява</a>
