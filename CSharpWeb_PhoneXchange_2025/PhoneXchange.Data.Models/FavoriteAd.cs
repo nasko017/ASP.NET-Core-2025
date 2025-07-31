@@ -13,9 +13,8 @@ namespace PhoneXchange.Data.Models
 
         public int AdId { get; set; }
 
-        public virtual IdentityUser ApplicationUser { get; set; } = null!;
+        public virtual ApplicationUser ApplicationUser { get; set; } = null!;
         public virtual Ad Ad { get; set; } = null!;
-
         public DateTime FavoritedOn { get; set; } = DateTime.UtcNow;
     }
 }

@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<PhoneXchange.Web.ViewModels.Ad.AdViewModel>
 @using Microsoft.AspNetCore.Identity
-@inject UserManager<IdentityUser> UserManager
+@using PhoneXchange.Data.Models
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     var currentUserId = UserManager.GetUserId(User);

@@ -92,7 +92,7 @@ namespace PhoneXchange.Services.Core
             var ad = await adRepository.GetByIdAsync(id);
             if (ad != null)
             {
-                await adRepository.DeleteAsync(ad);
+                await adRepository.HardDeleteAsync(ad);
             }
         }
     }

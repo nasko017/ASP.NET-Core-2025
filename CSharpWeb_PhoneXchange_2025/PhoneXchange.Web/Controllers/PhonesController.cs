@@ -31,14 +31,14 @@ namespace PhoneXchange.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(PhoneCreateViewModel model)
+        public async Task<IActionResult> Create(PhoneCreateViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
                 ViewBag.Brands = await brandService.GetAllAsync();
-                return View(model);
+                return View(viewModel);
             }
-            await phoneService.CreateAsync(model);
+            await phoneService.CreateAsync(viewModel);
             return RedirectToAction(nameof(Index));
         }
     }

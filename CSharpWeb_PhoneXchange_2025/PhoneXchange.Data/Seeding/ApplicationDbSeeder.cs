@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PhoneXchange.Data.Models;
 using PhoneXchange.Data.Seeding.Interfaces;
@@ -10,12 +9,12 @@ namespace PhoneXchange.Data.Seeding
     public class ApplicationDbSeeder : ISeeder
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public ApplicationDbSeeder(
             ApplicationDbContext context,
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
             _context = context;
@@ -44,11 +43,12 @@ namespace PhoneXchange.Data.Seeding
 
             if (user == null)
             {
-                user = new IdentityUser
+                user = new ApplicationUser
                 {
                     UserName = "testuser",
                     Email = email,
                     EmailConfirmed = true
+                    // FullName = "Test User" // Ако искаш
                 };
 
                 await _userManager.CreateAsync(user, password);

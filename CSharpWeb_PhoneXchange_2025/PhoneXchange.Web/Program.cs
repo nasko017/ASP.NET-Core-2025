@@ -8,6 +8,8 @@ using PhoneXchange.Data.Repository;
 using PhoneXchange.Services.Core.Interfaces;
 using PhoneXchange.Services.Core;
 using System.Globalization;
+using PhoneXchange.Data.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace PhoneXchange.Web
 {
@@ -23,7 +25,7 @@ namespace PhoneXchange.Web
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
                 options.Password.RequiredLength = 3;
@@ -33,18 +35,22 @@ namespace PhoneXchange.Web
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredUniqueChars = 0;
             })
+              .AddRoles<IdentityRole>() // ако използваш роли
               .AddEntityFrameworkStores<ApplicationDbContext>()
               .AddDefaultTokenProviders();
+
 
             builder.Services.AddScoped<ISeeder, ApplicationDbSeeder>();
 
             builder.Services.AddScoped<IAdRepository, AdRepository>();
             builder.Services.AddScoped<IBrandRepository, BrandRepository>();
-
+            //builder.Services.AddScoped<IPhoneRepository, PhoneRepository>();
 
 
             builder.Services.AddScoped<IAdService, AdService>();
             builder.Services.AddScoped<IBrandService, BrandService>();
+            //builder.Services.AddScoped<IPhoneService, PhoneService>();
+
 
 
 

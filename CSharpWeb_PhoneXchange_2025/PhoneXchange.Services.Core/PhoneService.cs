@@ -17,15 +17,15 @@ namespace PhoneXchange.Services.Core
         {
             phoneRepository= _phoneRepository;
         }
-        public async Task CreateAsync(PhoneCreateViewModel model)
+        public async Task CreateAsync(PhoneCreateViewModel viewModel)
         {
             var phone = new Phone
             {
-                Model = model.Model,
-                OS = model.OS,
-                IsNew = model.IsNew,
-                BrandId = model.BrandId,
-                Images = model.ImageUrls.Select(url => new PhoneImage { ImageUrl = url }).ToList()
+                Model = viewModel.Model,
+                OS = viewModel.OS,
+                IsNew = viewModel.IsNew,
+                BrandId = viewModel.BrandId,
+                Images = viewModel.ImageUrls.Select(url => new PhoneImage { ImageUrl = url }).ToList()
             };
             await phoneRepository.AddAsync(phone);
         }

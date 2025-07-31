@@ -10,9 +10,9 @@ namespace PhoneXchange.Data.Models
 
         public DateTime SentOn { get; set; } = DateTime.UtcNow;
 
-        public bool IsDeleted { get; set; } = false;
+        public bool IsDeleted { get; set; }
         public string SenderId { get; set; } = null!;
-        public virtual IdentityUser Sender { get; set; } = null!;
+        public virtual ApplicationUser Sender { get; set; } = null!;
 
         public int AdId { get; set; }
         public virtual Ad Ad { get; set; } = null!;

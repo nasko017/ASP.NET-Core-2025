@@ -15,10 +15,10 @@ namespace PhoneXchange.Data.Models
 
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
 
-        public bool IsDeleted { get; set; } = false;
+        public bool IsDeleted { get; set; }
 
         public string OwnerId { get; set; }=null!;
-        public virtual IdentityUser Owner { get; set; } = null!;
+        public virtual ApplicationUser Owner { get; set; } = null!;
 
         public virtual Phone Phone { get; set; } = null!;
 
