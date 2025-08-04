@@ -8,8 +8,46 @@
     ViewData["Title"] = "Всички обяви";
 }
 
-<h2>Всички обяви</h2>
+<!-- 📱 Заглавие -->
+<div class="text-center my-5">
+    <h1 class="display-4 fw-bold text-primary">PhoneXchange</h1>
+    <p class="lead text-muted">Платформата за обяви на нови и употребявани телефони</p>
+</div>
 
+<!-- 🔍 Търсачка -->
+<div class="row justify-content-center mb-4">
+    <div class="col-md-8">
+        <form method="get" action="/Ads">
+            <div class="input-group input-group-lg">
+                <input type="text" name="searchTerm" class="form-control" placeholder="Търси по модел или марка...">
+                <button class="btn btn-primary" type="submit">Търси</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 🆕 Последни 3 обяви -->
+<h3 class="mb-4 text-center">📢 Последни обяви</h3>
+<div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+    @foreach (var ad in Model.Take(3))
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <img src="@(ad.ImageUrls.FirstOrDefault() ?? "https://via.placeholder.com/400x250")"
+                     class="card-img-top" alt="Снимка">
+                <div class="card-body">
+                    <h5 class="card-title">@ad.Title</h5>
+                    <p class="card-text text-muted">@ad.Description</p>
+                    <p class="fw-bold">@ad.Price лв.</p>
+                    <a asp-controller="Ads" asp-action="Details" asp-route-id="@ad.Id" class="btn btn-outline-primary w-100">Виж детайли</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- 📋 Таблица с всички обяви -->
+<h3 class="mb-3">📄 Всички обяви</h3>
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
@@ -28,9 +66,9 @@
                 <td>@ad.Description</td>
                 <td>@ad.Price лв.</td>
                 <td>
-                    @if (!string.IsNullOrEmpty(ad.ImageUrl))
+                    @if (ad.ImageUrls != null && ad.ImageUrls.Any())
                     {
-                        <img src="@ad.ImageUrl" alt="Снимка" style="max-width:100px;" />
+                        <img src="@ad.ImageUrls.First()" alt="Снимка" style="max-width:100px;" />
                     }
                 </td>
                 <td>
@@ -46,4 +84,10 @@
     </tbody>
 </table>
 
+<!-- ➕ Добавяне на нова обява -->
 <a asp-controller="Ads" asp-action="Create" class="btn btn-primary mt-3">Добави нова обява</a>
+
+<!-- Footer -->
+<footer class="bg-light text-center py-4 mt-5">
+    <p class="mb-0">&copy; @DateTime.Now.Year PhoneXchange | Всички права запазени</p>
+</footer>

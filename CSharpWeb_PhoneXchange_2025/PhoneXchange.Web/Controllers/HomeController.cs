@@ -20,11 +20,13 @@ namespace PhoneXchange.Web.Controllers
         //    _logger = logger;
         //}
 
-        [AllowAnonymous]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var ads = await adService.GetAllAsync();
-            return View(ads);
+            var latestAds = ads.OrderByDescending(a => a.Id).Take(3); // Последните 3
+
+            return View(latestAds);
         }
 
         public IActionResult Privacy()

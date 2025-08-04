@@ -1,4 +1,4 @@
-﻿@model PhoneXchange.Web.ViewModels.Ad.AdViewModel
+﻿@model PhoneXchange.Web.ViewModels.Ad.AdDetailsViewModel
 
 @{
     ViewData["Title"] = "Детайли за обява";
@@ -6,15 +6,48 @@
 
 <h2>Детайли за обява</h2>
 
-<div class="card" style="max-width:500px;">
-    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+<div class="card mx-auto mb-4" style="max-width: 600px;">
+    @if (Model.ImageUrls != null && Model.ImageUrls.Any())
     {
-        <img src="@Model.ImageUrl" class="card-img-top" alt="Снимка" style="max-height:300px; object-fit:contain;" />
+        foreach (var imageUrl in Model.ImageUrls)
+        {
+            <img src="@imageUrl" class="card-img-top mb-2" alt="Снимка" style="max-height:300px; object-fit:contain;" />
+        }
     }
+
     <div class="card-body">
         <h4 class="card-title">@Model.Title</h4>
         <p class="card-text"><strong>Описание:</strong> @Model.Description</p>
         <p class="card-text"><strong>Цена:</strong> @Model.Price лв.</p>
-        <a href="@Url.Action("Index", "Ads")" class="btn btn-secondary">⬅️ Назад към всички обяви</a>
+        <p class="card-text"><strong>Марка:</strong> @Model.BrandName</p>
+        <p class="card-text"><strong>Модел:</strong> @Model.Model</p>
+        <p class="card-text"><strong>Операционна система:</strong> @Model.OS</p>
+        <p class="card-text"><strong>Състояние:</strong> @(Model.IsNew ? "Ново" : "Употребявано")</p>
+
+        @if (Model.ReviewsCount > 0)
+        {
+            <p class="card-text text-warning"><strong>Рейтинг:</strong> ⭐ @Model.AvgRating / 5 (от @Model.ReviewsCount ревюта)</p>
+        }
+
+        <a href="@Url.Action("Index", "Ads")" class="btn btn-secondary mt-3">⬅️ Назад към всички обяви</a>
     </div>
 </div>
+
+@if (Model.Reviews != null && Model.Reviews.Any())
+{
+    <h4>Ревюта</h4>
+    <div class="list-group mb-4">
+        @foreach (var review in Model.Reviews)
+        {
+            <div class="list-group-item">
+                <strong>@review.AuthorEmail</strong> - ⭐ @review.Rating
+                <p class="mb-0">@review.Comment</p>
+                <small class="text-muted">@review.CreatedOn.ToString("dd.MM.yyyy HH:mm")</small>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p class="text-muted">Все още няма ревюта за тази обява.</p>
+}

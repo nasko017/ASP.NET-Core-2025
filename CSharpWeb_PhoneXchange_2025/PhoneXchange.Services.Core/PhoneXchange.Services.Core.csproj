@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PhoneXchange.Data\PhoneXchange.Data.csproj" />
+    <ProjectReference Include="..\PhoneXchange.GCommon\PhoneXchange.GCommon.csproj" />
     <ProjectReference Include="..\PhoneXchange.Web.ViewModels\PhoneXchange.Web.ViewModels.csproj" />
   </ItemGroup>
 

@@ -2,9 +2,11 @@
 using PhoneXchange.Data.Repository.Interfaces;
 using PhoneXchange.Services.Core.Interfaces;
 using PhoneXchange.Web.ViewModels.Ad;
+using PhoneXchange.Web.ViewModels.Review;
 
 namespace PhoneXchange.Services.Core
 {
+    using PhoneXchange.GCommon.Helpers;
     public class AdService : IAdService
     {
         private readonly IAdRepository adRepository;
@@ -17,14 +19,16 @@ namespace PhoneXchange.Services.Core
         public async Task<IEnumerable<AdViewModel>> GetAllAsync()
         {
             var ads = await adRepository.GetAllAsync();
-            // Винаги попълвай OwnerId!
+
             return ads.Select(a => new AdViewModel
             {
                 Id = a.Id,
-                Title = a.Title ?? "",
-                Description = a.Description ?? "",
+                Title = a.Title ?? string.Empty,
+                Description = a.Description ?? string.Empty,
                 Price = a.Price,
-                ImageUrl = a.Phone?.Images?.FirstOrDefault()?.ImageUrl ?? "",
+                ImageUrls = a.Phone != null
+                    ? ImageUrlHelper.Deserialize(a.Phone.ImageUrlsSerialized)
+                    : new List<string>(),
                 OwnerId = a.OwnerId
             });
         }
@@ -38,13 +42,16 @@ namespace PhoneXchange.Services.Core
             return new AdViewModel
             {
                 Id = ad.Id,
-                Title = ad.Title ?? "",
-                Description = ad.Description ?? "",
+                Title = ad.Title,
+                Description = ad.Description,
                 Price = ad.Price,
-                ImageUrl = ad.Phone?.Images?.FirstOrDefault()?.ImageUrl ?? "",
+                ImageUrls = ad.Phone != null
+                    ? ImageUrlHelper.Deserialize(ad.Phone.ImageUrlsSerialized)
+                    : new List<string>(),
                 OwnerId = ad.OwnerId
             };
         }
+
         public async Task CreateAsync(AdCreateViewModel model, string userId)
         {
             var ad = new Ad
@@ -60,15 +67,41 @@ namespace PhoneXchange.Services.Core
                     OS = model.OS,
                     IsNew = model.IsNew,
                     BrandId = model.BrandId,
-                    Images = new List<PhoneImage>
-            {
-                new PhoneImage { ImageUrl = model.ImageUrl }
-            }
+                    ImageUrlsSerialized = ImageUrlHelper.Serialize(model.ImageUrls)
                 }
             };
 
             await adRepository.AddAsync(ad);
         }
+
+        public async Task<AdDetailsViewModel?> GetDetailsByIdAsync(int id)
+        {
+            var ad = await adRepository.GetByIdWithDetailsAsync(id);
+            if (ad == null) return null;
+
+            return new AdDetailsViewModel
+            {
+                Id = ad.Id,
+                Title = ad.Title,
+                Description = ad.Description,
+                Price = ad.Price,
+                Model = ad.Phone.Model,
+                OS = ad.Phone.OS,
+                IsNew = ad.Phone.IsNew,
+                BrandName = ad.Phone.Brand.Name,
+                ImageUrls = ImageUrlHelper.Deserialize(ad.Phone.ImageUrlsSerialized),
+                ReviewsCount = ad.Reviews.Count,
+                AvgRating = ad.Reviews.Any() ? ad.Reviews.Average(r => r.Rating) : 0,
+                Reviews = ad.Reviews.Select(r => new ReviewViewModel
+                {
+                    AuthorEmail = r.Author?.Email ?? "Непознат",
+                    Rating = r.Rating,
+                    Comment = r.Comment,
+                    CreatedOn = r.CreatedOn
+                }).ToList()
+            };
+        }
+
         public async Task EditAsync(AdEditViewModel model)
         {
             var ad = await adRepository.GetByIdAsync(model.Id);
@@ -78,10 +111,9 @@ namespace PhoneXchange.Services.Core
             ad.Description = model.Description;
             ad.Price = model.Price;
 
-            // Ако имаш само едно изображение:
-            if (ad.Phone?.Images?.Any() == true)
+            if (ad.Phone != null)
             {
-                ad.Phone.Images.First().ImageUrl = model.ImageUrl;
+                ad.Phone.ImageUrlsSerialized = ImageUrlHelper.Serialize(model.ImageUrls);
             }
 
             await adRepository.UpdateAsync(ad);

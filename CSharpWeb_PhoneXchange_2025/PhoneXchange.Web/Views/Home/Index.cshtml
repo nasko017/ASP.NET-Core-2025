@@ -1,16 +1,15 @@
-﻿@{
+﻿@model IEnumerable<PhoneXchange.Web.ViewModels.Ad.AdViewModel>
+
+@{
     ViewData["Title"] = "Начало";
 }
 
-<!-- Основен контейнер -->
 <div class="container py-5">
-    <!-- Заглавие и подзаглавие -->
     <div class="text-center mb-5">
         <h1 class="display-4 fw-bold text-primary">PhoneXchange</h1>
         <p class="lead text-muted">Платформата за обяви на нови и употребявани телефони</p>
     </div>
 
-    <!-- Търсене -->
     <div class="row justify-content-center mb-4">
         <div class="col-md-8">
             <form method="get" action="/Ads">
@@ -22,57 +21,29 @@
         </div>
     </div>
 
-    <!-- Последни обяви -->
     <h3 class="mb-4 text-center">📱 Последни обяви</h3>
     <div class="row row-cols-1 row-cols-md-3 g-4">
-        <!-- Обява 1 -->
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <img src="https://via.placeholder.com/400x250" class="card-img-top" alt="iPhone">
-                <div class="card-body">
-                    <h5 class="card-title">iPhone 14 Pro</h5>
-                    <p class="card-text text-muted">Ново устройство, 256GB, гаранция 24 месеца</p>
-                    <p class="fw-bold">1 999 лв.</p>
-                    <a href="/Ads/Details/1" class="btn btn-outline-primary w-100">Виж детайли</a>
+        @foreach (var ad in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="@ad.ImageUrls.FirstOrDefault() ?? " https: //via.placeholder.com/400x250"" class="card-img-top" alt="Снимка">
+                    <div class="card-body">
+                        <h5 class="card-title">@ad.Title</h5>
+                        <p class="card-text text-muted">@ad.Description</p>
+                        <p class="fw-bold">@ad.Price лв.</p>
+                        <a asp-controller="Ads" asp-action="Details" asp-route-id="@ad.Id" class="btn btn-outline-primary w-100">Виж детайли</a>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Обява 2 -->
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <img src="https://via.placeholder.com/400x250" class="card-img-top" alt="Samsung">
-                <div class="card-body">
-                    <h5 class="card-title">Samsung Galaxy S22</h5>
-                    <p class="card-text text-muted">Отлично състояние, с кутия и зарядно</p>
-                    <p class="fw-bold">1 599 лв.</p>
-                    <a href="/Ads/Details/2" class="btn btn-outline-primary w-100">Виж детайли</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Обява 3 -->
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <img src="https://via.placeholder.com/400x250" class="card-img-top" alt="Xiaomi">
-                <div class="card-body">
-                    <h5 class="card-title">Xiaomi Redmi Note 12</h5>
-                    <p class="card-text text-muted">Нов, отворена опаковка. Android 13</p>
-                    <p class="fw-bold">499 лв.</p>
-                    <a href="/Ads/Details/3" class="btn btn-outline-primary w-100">Виж детайли</a>
-                </div>
-            </div>
-        </div>
+        }
     </div>
 
-    <!-- Виж всички -->
     <div class="text-center mt-5">
-        <a href="/Ads" class="btn btn-lg btn-success px-5">Разгледай всички обяви</a>
+        <a asp-controller="Ads" asp-action="Index" class="btn btn-lg btn-success px-5">Разгледай всички обяви</a>
     </div>
 </div>
 
-<!-- Footer -->
 <footer class="bg-light text-center py-4 mt-5">
     <p class="mb-0">&copy; @DateTime.Now.Year PhoneXchange | Всички права запазени</p>
 </footer>
-

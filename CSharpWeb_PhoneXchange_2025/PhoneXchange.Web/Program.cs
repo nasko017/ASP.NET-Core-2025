@@ -51,7 +51,7 @@ namespace PhoneXchange.Web
             builder.Services.AddScoped<IBrandService, BrandService>();
             //builder.Services.AddScoped<IPhoneService, PhoneService>();
 
-
+             
 
 
             builder.Services.AddControllersWithViews();

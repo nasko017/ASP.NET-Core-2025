@@ -12,7 +12,7 @@ using PhoneXchange.Web.Data;
 namespace PhoneXchange.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250731023055_Initial")]
+    [Migration("20250804130547_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -171,18 +171,15 @@ namespace PhoneXchange.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<string>("OwnerId")
                         .IsRequired()
@@ -193,8 +190,8 @@ namespace PhoneXchange.Data.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -223,8 +220,7 @@ namespace PhoneXchange.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FullName")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -272,26 +268,6 @@ namespace PhoneXchange.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("PhoneXchange.Data.Models.ApplicationUserAd", b =>
-                {
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AdId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("PurchasedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
-
-                    b.HasKey("ApplicationUserId", "AdId");
-
-                    b.HasIndex("AdId");
-
-                    b.ToTable("ApplicationUserAds");
-                });
-
             modelBuilder.Entity("PhoneXchange.Data.Models.Brand", b =>
                 {
                     b.Property<int>("Id")
@@ -319,9 +295,7 @@ namespace PhoneXchange.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FavoritedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("ApplicationUserId", "AdId");
 
@@ -343,29 +317,68 @@ namespace PhoneXchange.Data.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RecipientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SenderId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("SentOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AdId");
 
+                    b.HasIndex("RecipientId");
+
                     b.HasIndex("SenderId");
 
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("PhoneXchange.Data.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AdId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BuyerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("OrderedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdId");
+
+                    b.HasIndex("BuyerId");
+
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("PhoneXchange.Data.Models.Phone", b =>
@@ -382,18 +395,24 @@ namespace PhoneXchange.Data.Migrations
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ImageUrlsSerialized")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("ImageUrls");
+
                     b.Property<bool>("IsNew")
                         .HasColumnType("bit");
 
                     b.Property<string>("Model")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("OS")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
 
@@ -405,7 +424,7 @@ namespace PhoneXchange.Data.Migrations
                     b.ToTable("Phones");
                 });
 
-            modelBuilder.Entity("PhoneXchange.Data.Models.PhoneImage", b =>
+            modelBuilder.Entity("PhoneXchange.Data.Models.Review", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -413,18 +432,31 @@ namespace PhoneXchange.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AdId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("PhoneId")
+                    b.Property<string>("AuthorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Rating")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PhoneId");
+                    b.HasIndex("AdId");
 
-                    b.ToTable("PhoneImages");
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -489,25 +521,6 @@ namespace PhoneXchange.Data.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("PhoneXchange.Data.Models.ApplicationUserAd", b =>
-                {
-                    b.HasOne("PhoneXchange.Data.Models.Ad", "Ad")
-                        .WithMany()
-                        .HasForeignKey("AdId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PhoneXchange.Data.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Ad");
-
-                    b.Navigation("ApplicationUser");
-                });
-
             modelBuilder.Entity("PhoneXchange.Data.Models.FavoriteAd", b =>
                 {
                     b.HasOne("PhoneXchange.Data.Models.Ad", "Ad")
@@ -532,6 +545,12 @@ namespace PhoneXchange.Data.Migrations
                     b.HasOne("PhoneXchange.Data.Models.Ad", "Ad")
                         .WithMany("Messages")
                         .HasForeignKey("AdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PhoneXchange.Data.Models.ApplicationUser", "Recipient")
+                        .WithMany()
+                        .HasForeignKey("RecipientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -543,7 +562,28 @@ namespace PhoneXchange.Data.Migrations
 
                     b.Navigation("Ad");
 
+                    b.Navigation("Recipient");
+
                     b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("PhoneXchange.Data.Models.Order", b =>
+                {
+                    b.HasOne("PhoneXchange.Data.Models.Ad", "Ad")
+                        .WithMany("Orders")
+                        .HasForeignKey("AdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PhoneXchange.Data.Models.ApplicationUser", "Buyer")
+                        .WithMany()
+                        .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Ad");
+
+                    b.Navigation("Buyer");
                 });
 
             modelBuilder.Entity("PhoneXchange.Data.Models.Phone", b =>
@@ -557,7 +597,7 @@ namespace PhoneXchange.Data.Migrations
                     b.HasOne("PhoneXchange.Data.Models.Brand", "Brand")
                         .WithMany("Phones")
                         .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Ad");
@@ -565,15 +605,23 @@ namespace PhoneXchange.Data.Migrations
                     b.Navigation("Brand");
                 });
 
-            modelBuilder.Entity("PhoneXchange.Data.Models.PhoneImage", b =>
+            modelBuilder.Entity("PhoneXchange.Data.Models.Review", b =>
                 {
-                    b.HasOne("PhoneXchange.Data.Models.Phone", "Phone")
-                        .WithMany("Images")
-                        .HasForeignKey("PhoneId")
+                    b.HasOne("PhoneXchange.Data.Models.Ad", "Ad")
+                        .WithMany("Reviews")
+                        .HasForeignKey("AdId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Phone");
+                    b.HasOne("PhoneXchange.Data.Models.ApplicationUser", "Author")
+                        .WithMany("Reviews")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Ad");
+
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("PhoneXchange.Data.Models.Ad", b =>
@@ -582,8 +630,12 @@ namespace PhoneXchange.Data.Migrations
 
                     b.Navigation("Messages");
 
+                    b.Navigation("Orders");
+
                     b.Navigation("Phone")
                         .IsRequired();
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("PhoneXchange.Data.Models.ApplicationUser", b =>
@@ -593,16 +645,13 @@ namespace PhoneXchange.Data.Migrations
                     b.Navigation("FavoriteAds");
 
                     b.Navigation("Messages");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("PhoneXchange.Data.Models.Brand", b =>
                 {
                     b.Navigation("Phones");
-                });
-
-            modelBuilder.Entity("PhoneXchange.Data.Models.Phone", b =>
-                {
-                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }

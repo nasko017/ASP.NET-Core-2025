@@ -60,9 +60,12 @@
     </div>
 
     <div class="mb-2">
-        <label asp-for="ImageUrl" class="form-label">Снимка (URL)</label>
-        <input asp-for="ImageUrl" class="form-control" />
-        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+        <label class="form-label">Снимки (URL-и)</label>
+        @for (int i = 0; i < 3; i++)
+        {
+            <input name="ImageUrls[@i]" class="form-control mb-1" placeholder="https://example.com/image.jpg" />
+        }
+        <span asp-validation-for="ImageUrls" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Създай</button>

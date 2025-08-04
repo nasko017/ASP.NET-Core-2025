@@ -1,11 +1,7 @@
 ﻿using PhoneXchange.Data.Models;
 using PhoneXchange.Data.Repository.Interfaces;
+using PhoneXchange.GCommon.Helpers;
 using PhoneXchange.Web.ViewModels.Phone;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhoneXchange.Services.Core
 {
@@ -15,8 +11,9 @@ namespace PhoneXchange.Services.Core
 
         public PhoneService(IPhoneRepository _phoneRepository)
         {
-            phoneRepository= _phoneRepository;
+            phoneRepository = _phoneRepository;
         }
+
         public async Task CreateAsync(PhoneCreateViewModel viewModel)
         {
             var phone = new Phone
@@ -25,10 +22,10 @@ namespace PhoneXchange.Services.Core
                 OS = viewModel.OS,
                 IsNew = viewModel.IsNew,
                 BrandId = viewModel.BrandId,
-                Images = viewModel.ImageUrls.Select(url => new PhoneImage { ImageUrl = url }).ToList()
+                ImageUrlsSerialized = ImageUrlHelper.Serialize(viewModel.ImageUrls)
             };
+
             await phoneRepository.AddAsync(phone);
         }
-
     }
 }

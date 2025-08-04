@@ -29,7 +29,7 @@ namespace PhoneXchange.Data.Repository
                 .Find(id);
         }
 
-        public ValueTask<TEntity?> GetByIdAsync(TKey id)
+        public virtual ValueTask<TEntity?> GetByIdAsync(TKey id)
         {
             return this.DbSet
                 .FindAsync(id);

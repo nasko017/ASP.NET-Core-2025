@@ -11,203 +11,151 @@ namespace PhoneXchange.Web.Data
             : base(options)
         {
         }
-        public virtual DbSet<Ad> Ads { get; set; }
-        public virtual DbSet<Phone> Phones { get; set; }
-        public virtual DbSet<Brand> Brands { get; set; }
-        public virtual DbSet<Message> Messages { get; set; }
-        public virtual DbSet<FavoriteAd> FavoriteAds { get; set; }
-        public virtual DbSet<ApplicationUserAd> ApplicationUserAds { get; set; }
-        public virtual DbSet<PhoneImage> PhoneImages { get; set; }
+        public DbSet<Ad> Ads { get; set; } = null!;
+        public DbSet<Brand> Brands { get; set; } = null!;
+        public DbSet<FavoriteAd> FavoriteAds { get; set; } = null!;
+        public DbSet<Message> Messages { get; set; } = null!;
+        public DbSet<Order> Orders { get; set; } = null!;
+        public DbSet<Phone> Phones { get; set; } = null!;
+        public DbSet<Review> Reviews { get; set; } = null!;
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(builder);
 
-            // Ad
-            modelBuilder.Entity<Ad>(entity =>
-            {
-                entity.HasKey(e => e.Id);
+            // Soft delete filters
+            builder.Entity<Ad>().HasQueryFilter(a => !a.IsDeleted);
+            builder.Entity<Message>().HasQueryFilter(m => !m.IsDeleted);
 
-                entity.Property(e => e.Title)
-                      .IsRequired()
-                      .HasMaxLength(200);
+            // --- Ad ---
+            builder.Entity<Ad>()
+                .Property(a => a.Title)
+                .IsRequired()
+                .HasMaxLength(100);
 
-                entity.Property(e => e.Description)
-                      .IsRequired();
+            builder.Entity<Ad>()
+                .Property(a => a.Description)
+                .IsRequired()
+                .HasMaxLength(1000);
 
-                entity.Property(e => e.Price)
-                      .HasColumnType("decimal(18,2)");
+            builder.Entity<Ad>()
+                .Property(a => a.Price)
+                .HasColumnType("decimal(18,2)");
 
-                entity.Property(e => e.CreatedOn)
-                      .HasDefaultValueSql("getutcdate()");
+            builder.Entity<Ad>()
+                .HasOne(a => a.Phone)
+                .WithOne(p => p.Ad)
+                .HasForeignKey<Phone>(p => p.AdId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-                entity.Property(e => e.IsDeleted)
-                      .HasDefaultValue(false);
+            builder.Entity<Ad>()
+                .HasOne(a => a.Owner)
+                .WithMany(u => u.Ads)
+                .HasForeignKey(a => a.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(e => e.Owner)
-                      .WithMany(u => u.Ads)
-                      .HasForeignKey(e => e.OwnerId)
-                      .OnDelete(DeleteBehavior.Restrict);
+            // --- Phone ---
+            builder.Entity<Phone>()
+                .Property(p => p.Model)
+                .IsRequired()
+                .HasMaxLength(50);
 
-                entity.HasOne(e => e.Phone)
-                      .WithOne(p => p.Ad)
-                      .HasForeignKey<Phone>(p => p.AdId)
-                      .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Phone>()
+                .Property(p => p.OS)
+                .IsRequired()
+                .HasMaxLength(30);
 
-                entity.HasMany(e => e.Messages)
-                      .WithOne(m => m.Ad)
-                      .HasForeignKey(m => m.AdId)
-                      .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Phone>()
+                .Property(p => p.ImageUrlsSerialized)
+                .HasColumnName("ImageUrls")
+                .HasMaxLength(1000); // serialized string
 
-                entity.HasMany(e => e.Favorites)
-                      .WithOne(f => f.Ad)
-                      .HasForeignKey(f => f.AdId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
+            // --- Brand ---
+            builder.Entity<Brand>()
+                .Property(b => b.Name)
+                .IsRequired()
+                .HasMaxLength(50);
 
-            // ApplicationUser
-            modelBuilder.Entity<ApplicationUser>(entity =>
-            {
-                entity.Property(e => e.FullName)
-                      .HasMaxLength(100);
+            // --- Review ---
+            builder.Entity<Review>()
+                .Property(r => r.Comment)
+                .HasMaxLength(1000);
 
-                entity.HasMany(u => u.Ads)
-                      .WithOne(a => a.Owner)
-                      .HasForeignKey(a => a.OwnerId)
-                      .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Review>()
+                .HasOne(r => r.Ad)
+                .WithMany(a => a.Reviews)
+                .HasForeignKey(r => r.AdId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasMany(u => u.FavoriteAds)
-                      .WithOne(f => f.ApplicationUser)
-                      .HasForeignKey(f => f.ApplicationUserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Review>()
+                .HasOne(r => r.Author)
+                .WithMany(u => u.Reviews)
+                .HasForeignKey(r => r.AuthorId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasMany(u => u.Messages)
-                      .WithOne(m => m.Sender)
-                      .HasForeignKey(m => m.SenderId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
+            // --- FavoriteAd ---
+            builder.Entity<FavoriteAd>()
+                .HasKey(f => new { f.ApplicationUserId, f.AdId });
 
-            // ApplicationUserAd
-            modelBuilder.Entity<ApplicationUserAd>(entity =>
-            {
-                entity.HasKey(e => new { e.ApplicationUserId, e.AdId });
+            builder.Entity<FavoriteAd>()
+                .HasOne(f => f.ApplicationUser)
+                .WithMany(u => u.FavoriteAds)
+                .HasForeignKey(f => f.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasOne(e => e.ApplicationUser)
-                      .WithMany()
-                      .HasForeignKey(e => e.ApplicationUserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<FavoriteAd>()
+                .HasOne(f => f.Ad)
+                .WithMany(a => a.Favorites)
+                .HasForeignKey(f => f.AdId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasOne(e => e.Ad)
-                      .WithMany()
-                      .HasForeignKey(e => e.AdId)
-                      .OnDelete(DeleteBehavior.Cascade);
+            // --- Order ---
+            builder.Entity<Order>()
+                .Property(o => o.Note)
+                .HasMaxLength(500);
 
-                entity.Property(e => e.PurchasedOn)
-                      .HasDefaultValueSql("getutcdate()");
-            });
+            builder.Entity<Order>()
+                .Property(o => o.Status)
+                .HasConversion<string>() // enum -> string
+                .HasMaxLength(20);
 
-            // Brand
-            modelBuilder.Entity<Brand>(entity =>
-            {
-                entity.HasKey(e => e.Id);
+            builder.Entity<Order>()
+                .HasOne(o => o.Buyer)
+                .WithMany()
+                .HasForeignKey(o => o.BuyerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-                entity.Property(e => e.Name)
-                      .IsRequired()
-                      .HasMaxLength(50);
+            builder.Entity<Order>()
+                .HasOne(o => o.Ad)
+                .WithMany(a => a.Orders)
+                .HasForeignKey(o => o.AdId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasMany(b => b.Phones)
-                      .WithOne(p => p.Brand)
-                      .HasForeignKey(p => p.BrandId)
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
+            // --- Message ---
+            builder.Entity<Message>()
+                .Property(m => m.Content)
+                .IsRequired()
+                .HasMaxLength(2000);
 
-            // FavoriteAd
-            modelBuilder.Entity<FavoriteAd>(entity =>
-            {
-                entity.HasKey(e => new { e.ApplicationUserId, e.AdId });
+            builder.Entity<Message>()
+                .HasOne(m => m.Sender)
+                .WithMany(u => u.Messages)
+                .HasForeignKey(m => m.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(e => e.ApplicationUser)
-                      .WithMany(u => u.FavoriteAds)
-                      .HasForeignKey(e => e.ApplicationUserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Message>()
+                .HasOne(m => m.Recipient)
+                .WithMany()
+                .HasForeignKey(m => m.RecipientId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(e => e.Ad)
-                      .WithMany(a => a.Favorites)
-                      .HasForeignKey(e => e.AdId)
-                      .OnDelete(DeleteBehavior.Cascade);
-
-                entity.Property(e => e.FavoritedOn)
-                      .HasDefaultValueSql("getutcdate()");
-            });
-
-            // Message
-            modelBuilder.Entity<Message>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-
-                entity.Property(e => e.Content)
-                      .IsRequired();
-
-                entity.Property(e => e.SentOn)
-                      .HasDefaultValueSql("getutcdate()");
-
-                entity.Property(e => e.IsDeleted)
-                      .HasDefaultValue(false);
-
-                entity.HasOne(m => m.Sender)
-                      .WithMany(u => u.Messages)
-                      .HasForeignKey(m => m.SenderId)
-                      .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(m => m.Ad)
-                      .WithMany(a => a.Messages)
-                      .HasForeignKey(m => m.AdId)
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            // Phone
-            modelBuilder.Entity<Phone>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-
-                entity.Property(e => e.Model)
-                      .IsRequired()
-                      .HasMaxLength(100);
-
-                entity.Property(e => e.OS)
-                      .IsRequired()
-                      .HasMaxLength(50);
-
-                entity.HasOne(p => p.Brand)
-                      .WithMany(b => b.Phones)
-                      .HasForeignKey(p => p.BrandId)
-                      .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(p => p.Ad)
-                      .WithOne(a => a.Phone)
-                      .HasForeignKey<Phone>(p => p.AdId)
-                      .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasMany(p => p.Images)
-                      .WithOne(i => i.Phone)
-                      .HasForeignKey(i => i.PhoneId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            // PhoneImage
-            modelBuilder.Entity<PhoneImage>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-
-                entity.Property(e => e.ImageUrl)
-                      .IsRequired();
-
-                entity.HasOne(i => i.Phone)
-                      .WithMany(p => p.Images)
-                      .HasForeignKey(i => i.PhoneId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
+            builder.Entity<Message>()
+                .HasOne(m => m.Ad)
+                .WithMany(a => a.Messages)
+                .HasForeignKey(m => m.AdId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
+
 
     }
 }

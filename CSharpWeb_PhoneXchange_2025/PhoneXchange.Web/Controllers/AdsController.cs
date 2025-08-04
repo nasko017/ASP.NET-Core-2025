@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PhoneXchange.Services.Core;
 using PhoneXchange.Services.Core.Interfaces;
 using PhoneXchange.Web.ViewModels.Ad;
 using System.Security.Claims;
@@ -37,11 +36,16 @@ namespace PhoneXchange.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Brands = await brandService.GetAllAsync(); // ВАЖНО!
+                ViewBag.Brands = await brandService.GetAllAsync();
                 return View(viewModel);
             }
 
-            var userId = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(); // или можеш да използваш RedirectToAction("Login", "Account")
+            }
+
             await adService.CreateAsync(viewModel, userId);
             return RedirectToAction(nameof(Index));
         }
@@ -50,32 +54,35 @@ namespace PhoneXchange.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var ad = await adService.GetByIdAsync(id);
+            var ad = await adService.GetDetailsByIdAsync(id); 
             if (ad == null)
                 return NotFound();
-            return View(ad);
+
+            return View(ad); 
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var ad = await adService.GetByIdAsync(id);
+            var ad = await adService.GetByIdAsync(id); // връща AdViewModel
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (ad == null || (ad.OwnerId != userId && !User.IsInRole("Admin")))
                 return Forbid();
 
-            // Може да се наложи мапване към EditViewModel
             var model = new AdEditViewModel
             {
                 Id = ad.Id,
                 Title = ad.Title,
                 Description = ad.Description,
                 Price = ad.Price,
-                ImageUrl = ad.ImageUrl
+                ImageUrls = ad.ImageUrls ?? new List<string>()
             };
+
             return View(model);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -118,7 +125,6 @@ namespace PhoneXchange.Web.Controllers
 
             await adService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
-
         }
     }
 }

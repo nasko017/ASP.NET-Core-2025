@@ -1,4 +1,6 @@
 ﻿
+using PhoneXchange.Web.ViewModels.Review;
+
 namespace PhoneXchange.Web.ViewModels.Ad
 {
     public class AdViewModel
@@ -7,8 +9,10 @@ namespace PhoneXchange.Web.ViewModels.Ad
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
         public decimal Price { get; set; }
-        public string ImageUrl { get; set; } = null!;
-
+        public List<string> ImageUrls { get; set; } = new();
         public string OwnerId { get; set; } = string.Empty;
+        public double AverageRating { get; set; }
+        public List<ReviewViewModel> Reviews { get; set; } = new();
     }
+
 }

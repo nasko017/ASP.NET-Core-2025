@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
-
-namespace PhoneXchange.Data.Models
+﻿namespace PhoneXchange.Data.Models
 {
     public class Ad
     {
@@ -22,6 +19,8 @@ namespace PhoneXchange.Data.Models
 
         public virtual Phone Phone { get; set; } = null!;
 
+        public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
         public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
         public virtual ICollection<FavoriteAd> Favorites { get; set; } = new List<FavoriteAd>();
     }

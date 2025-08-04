@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace PhoneXchange.Data.Models
+﻿namespace PhoneXchange.Data.Models
 {
     public class Message
     {
@@ -11,10 +9,17 @@ namespace PhoneXchange.Data.Models
         public DateTime SentOn { get; set; } = DateTime.UtcNow;
 
         public bool IsDeleted { get; set; }
+
         public string SenderId { get; set; } = null!;
+
         public virtual ApplicationUser Sender { get; set; } = null!;
 
+        public string RecipientId { get; set; } = null!;
+
+        public virtual ApplicationUser Recipient { get; set; } = null!;
+
         public int AdId { get; set; }
+
         public virtual Ad Ad { get; set; } = null!;
     }
 }

@@ -5,5 +5,7 @@ namespace PhoneXchange.Data.Repository.Interfaces
 {
     public interface IAdRepository:IRepository<Ad,int>,IAsyncRepository<Ad, int>
     {
+        Task<Ad?> GetByIdWithDetailsAsync(int id);
+
     }
 }
