@@ -1,53 +1,92 @@
 ﻿@model PhoneXchange.Web.ViewModels.Ad.AdDetailsViewModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<PhoneXchange.Data.Models.ApplicationUser> UserManager
+@inject SignInManager<PhoneXchange.Data.Models.ApplicationUser> SignInManager
+@using System.Security.Claims
 
 @{
-    ViewData["Title"] = "Детайли за обява";
+    ViewData["Title"] = Model.Title;
+
+
+
+    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+    bool isLoggedIn = SignInManager.IsSignedIn(User);
+
+    bool isOwner = currentUserId == Model.OwnerId;
 }
 
-<h2>Детайли за обява</h2>
+<h2>@Model.Title</h2>
 
-<div class="card mx-auto mb-4" style="max-width: 600px;">
-    @if (Model.ImageUrls != null && Model.ImageUrls.Any())
-    {
-        foreach (var imageUrl in Model.ImageUrls)
-        {
-            <img src="@imageUrl" class="card-img-top mb-2" alt="Снимка" style="max-height:300px; object-fit:contain;" />
-        }
-    }
-
-    <div class="card-body">
-        <h4 class="card-title">@Model.Title</h4>
-        <p class="card-text"><strong>Описание:</strong> @Model.Description</p>
-        <p class="card-text"><strong>Цена:</strong> @Model.Price лв.</p>
-        <p class="card-text"><strong>Марка:</strong> @Model.BrandName</p>
-        <p class="card-text"><strong>Модел:</strong> @Model.Model</p>
-        <p class="card-text"><strong>Операционна система:</strong> @Model.OS</p>
-        <p class="card-text"><strong>Състояние:</strong> @(Model.IsNew ? "Ново" : "Употребявано")</p>
-
-        @if (Model.ReviewsCount > 0)
-        {
-            <p class="card-text text-warning"><strong>Рейтинг:</strong> ⭐ @Model.AvgRating / 5 (от @Model.ReviewsCount ревюта)</p>
-        }
-
-        <a href="@Url.Action("Index", "Ads")" class="btn btn-secondary mt-3">⬅️ Назад към всички обяви</a>
-    </div>
+<div>
+    <strong>Марка:</strong> @Model.BrandName<br />
+    <strong>Модел:</strong> @Model.Model<br />
+    <strong>Операционна система:</strong> @Model.OS<br />
+    <strong>Състояние:</strong> @(Model.IsNew ? "Ново" : "Употребявано")<br />
+    <strong>Цена:</strong> <span class="text-success fw-bold">@Model.Price лв.</span><br />
 </div>
 
-@if (Model.Reviews != null && Model.Reviews.Any())
+@if (Model.ImageUrls.Any())
+
 {
-    <h4>Ревюта</h4>
-    <div class="list-group mb-4">
-        @foreach (var review in Model.Reviews)
+    <div class="my-3">
+        @foreach (var url in Model.ImageUrls)
+
         {
-            <div class="list-group-item">
-                <strong>@review.AuthorEmail</strong> - ⭐ @review.Rating
-                <p class="mb-0">@review.Comment</p>
-                <small class="text-muted">@review.CreatedOn.ToString("dd.MM.yyyy HH:mm")</small>
-            </div>
+            <img src="@url" alt="Снимка" style="max-width: 250px; margin-right: 10px;" />
         }
     </div>
 }
-else
+
+<hr />
+
+<h4>Ревюта (общо @Model.ReviewsCount)</h4>
+@if (Model.Reviews.Any())
+
 {
-    <p class="text-muted">Все още няма ревюта за тази обява.</p>
+    <ul class="list-group">
+        @foreach (var review in Model.Reviews)
+
+        {
+            <li class="list-group-item">
+                <strong>@review.AuthorEmail</strong> —
+                <em>@review.Rating/5</em><br />
+                <span>@review.Comment</span><br />
+                <small class="text-muted">@review.CreatedOn.ToString("g")</small>
+            </li>
+        }
+    </ul>
+}
+
+else
+
+{
+    <p>Няма налични ревюта.</p>
+}
+
+<hr />
+
+@if (isLoggedIn && !isOwner)
+
+{
+    <h4>Изпрати съобщение до продавача</h4>
+    <form asp-action="Send" asp-controller="Messages" method="post">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" name="RecipientId" value="@Model.OwnerId" />
+        <input type="hidden" name="AdId" value="@Model.Id" />
+
+        <div class="mb-3">
+            <label for="Content" class="form-label">Съобщение:</label>
+            <textarea name="Content" class="form-control" required rows="3" maxlength="1000"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Изпрати</button>
+    </form>
+}
+
+else if (!isLoggedIn)
+
+{
+    <p class="text-muted mt-4">Влезте в профила си, за да можете да изпращате съобщения.</p>
 }

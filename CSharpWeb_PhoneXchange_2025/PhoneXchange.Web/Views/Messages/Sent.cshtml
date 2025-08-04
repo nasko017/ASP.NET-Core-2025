@@ -1,0 +1,33 @@
+﻿@model List<PhoneXchange.Web.ViewModels.Message.MessageViewModel>
+@{
+    ViewData["Title"] = "Изпратени съобщения";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (!Model.Any())
+{
+    <p>Нямате изпратени съобщения.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Получател</th>
+                <th>Съобщение</th>
+                <th>Дата</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var message in Model)
+            {
+                <tr>
+                    <td>@message.OtherUserEmail</td>
+                    <td>@message.Content</td>
+                    <td>@message.SentOn.ToString("dd.MM.yyyy HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

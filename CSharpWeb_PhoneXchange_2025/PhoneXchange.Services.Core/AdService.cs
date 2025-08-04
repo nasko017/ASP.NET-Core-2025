@@ -90,6 +90,7 @@ namespace PhoneXchange.Services.Core
                 IsNew = ad.Phone.IsNew,
                 BrandName = ad.Phone.Brand.Name,
                 ImageUrls = ImageUrlHelper.Deserialize(ad.Phone.ImageUrlsSerialized),
+                OwnerId = ad.OwnerId,
                 ReviewsCount = ad.Reviews.Count,
                 AvgRating = ad.Reviews.Any() ? ad.Reviews.Average(r => r.Rating) : 0,
                 Reviews = ad.Reviews.Select(r => new ReviewViewModel

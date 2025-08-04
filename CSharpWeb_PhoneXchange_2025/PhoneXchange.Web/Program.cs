@@ -44,14 +44,17 @@ namespace PhoneXchange.Web
 
             builder.Services.AddScoped<IAdRepository, AdRepository>();
             builder.Services.AddScoped<IBrandRepository, BrandRepository>();
-            //builder.Services.AddScoped<IPhoneRepository, PhoneRepository>();
+            builder.Services.AddScoped<IPhoneRepository, PhoneRepository>();
+            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 
             builder.Services.AddScoped<IAdService, AdService>();
             builder.Services.AddScoped<IBrandService, BrandService>();
-            //builder.Services.AddScoped<IPhoneService, PhoneService>();
+            builder.Services.AddScoped<IPhoneService, PhoneService>();
+            builder.Services.AddScoped<IMessageService, MessageService>();
 
-             
+
+
 
 
             builder.Services.AddControllersWithViews();

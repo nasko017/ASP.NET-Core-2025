@@ -1,9 +1,6 @@
 ﻿using PhoneXchange.Web.ViewModels.Review;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace PhoneXchange.Web.ViewModels.Ad
 {
@@ -20,6 +17,8 @@ namespace PhoneXchange.Web.ViewModels.Ad
 
         public string BrandName { get; set; } = null!;
         public List<string> ImageUrls { get; set; } = new();
+
+        public string OwnerId { get; set; } = null!;
 
         public int ReviewsCount { get; set; }
         public double AvgRating { get; set; }

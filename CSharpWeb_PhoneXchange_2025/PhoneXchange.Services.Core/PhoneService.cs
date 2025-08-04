@@ -1,11 +1,12 @@
 ﻿using PhoneXchange.Data.Models;
 using PhoneXchange.Data.Repository.Interfaces;
 using PhoneXchange.GCommon.Helpers;
+using PhoneXchange.Services.Core.Interfaces;
 using PhoneXchange.Web.ViewModels.Phone;
 
 namespace PhoneXchange.Services.Core
 {
-    public class PhoneService
+    public class PhoneService : IPhoneService
     {
         private readonly IPhoneRepository phoneRepository;
 
@@ -26,6 +27,16 @@ namespace PhoneXchange.Services.Core
             };
 
             await phoneRepository.AddAsync(phone);
+        }
+
+        Task<IEnumerable<PhoneViewModel>> IPhoneService.GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<PhoneViewModel?> IPhoneService.GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

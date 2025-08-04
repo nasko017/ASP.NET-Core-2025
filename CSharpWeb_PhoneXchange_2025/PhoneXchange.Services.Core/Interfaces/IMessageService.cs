@@ -1,9 +1,4 @@
 ﻿using PhoneXchange.Web.ViewModels.Message;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhoneXchange.Services.Core.Interfaces
 {
@@ -11,5 +6,7 @@ namespace PhoneXchange.Services.Core.Interfaces
     {
         Task SendAsync(string senderId, MessageCreateViewModel model);
         Task<List<MessageViewModel>> GetMessagesAsync(string userId);
+        Task<List<MessageViewModel>> GetSentMessagesAsync(string userId);
+
     }
 }
