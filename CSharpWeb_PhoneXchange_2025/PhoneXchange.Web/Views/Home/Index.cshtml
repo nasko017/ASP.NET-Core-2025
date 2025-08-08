@@ -1,4 +1,5 @@
-﻿@model IEnumerable<PhoneXchange.Web.ViewModels.Ad.AdViewModel>
+﻿@using PhoneXchange.Web.ViewModels.Ad
+@model IEnumerable<AdViewModel>
 
 @{
     ViewData["Title"] = "Начало";
@@ -12,7 +13,7 @@
 
     <div class="row justify-content-center mb-4">
         <div class="col-md-8">
-            <form method="get" action="/Ads">
+            <form method="get" asp-controller="Ads" asp-action="Index">
                 <div class="input-group input-group-lg">
                     <input type="text" name="searchTerm" class="form-control" placeholder="Търси по модел или марка...">
                     <button class="btn btn-primary" type="submit">Търси</button>
@@ -22,22 +23,40 @@
     </div>
 
     <h3 class="mb-4 text-center">📱 Последни обяви</h3>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var ad in Model)
-        {
-            <div class="col">
-                <div class="card h-100 shadow-sm">
-                    <img src="@ad.ImageUrls.FirstOrDefault() ?? " https: //via.placeholder.com/400x250"" class="card-img-top" alt="Снимка">
-                    <div class="card-body">
-                        <h5 class="card-title">@ad.Title</h5>
-                        <p class="card-text text-muted">@ad.Description</p>
-                        <p class="fw-bold">@ad.Price лв.</p>
-                        <a asp-controller="Ads" asp-action="Details" asp-route-id="@ad.Id" class="btn btn-outline-primary w-100">Виж детайли</a>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var ad in Model)
+            {
+                var img = (ad.ImageUrls != null && ad.ImageUrls.Any())
+                ? ad.ImageUrls.First()
+                : "https://via.placeholder.com/400x250?text=No+Image";
+
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@img" class="card-img-top" alt="@ad.Title" />
+                        <div class="card-body">
+                            <h5 class="card-title text-truncate" title="@ad.Title">@ad.Title</h5>
+                            <p class="card-text text-muted" title="@ad.Description">
+                                @{
+                                    var desc = ad.Description ?? "";
+                                    var shortDesc = desc.Length > 100 ? desc.Substring(0, 100) + "…" : desc;
+                                }
+                                @shortDesc
+                            </p>
+                            <p class="fw-bold">@ad.Price.ToString("0.00") лв.</p>
+                            <a asp-controller="Ads" asp-action="Details" asp-route-id="@ad.Id" class="btn btn-outline-primary w-100">Виж детайли</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center">Няма обяви за показване.</div>
+    }
 
     <div class="text-center mt-5">
         <a asp-controller="Ads" asp-action="Index" class="btn btn-lg btn-success px-5">Разгледай всички обяви</a>

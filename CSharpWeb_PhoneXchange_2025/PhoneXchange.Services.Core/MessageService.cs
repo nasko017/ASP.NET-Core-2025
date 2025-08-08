@@ -72,5 +72,24 @@ namespace PhoneXchange.Services.Core
                 SentOn = m.SentOn
             }).ToList();
         }
+        public async Task<IEnumerable<MessageActivityViewModel>> GetUserActivityAsync(string userId)
+        {
+            return await messageRepository
+                .GetAllAttached()
+                .Where(m => m.SenderId == userId || m.RecipientId == userId)
+                .Select(m => new MessageActivityViewModel
+                {
+                    MessageId = m.Id,
+                    AdId = m.Ad.Id,
+                    AdTitle = m.Ad.Title,
+                    Content = m.Content,
+                    SentOn = m.SentOn,
+                    FromEmail = m.Sender.Email,
+                    ToEmail = m.Recipient.Email
+                })
+                .OrderByDescending(m => m.SentOn)
+                .ToListAsync();
+        }
+
     }
 }

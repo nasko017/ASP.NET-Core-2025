@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PhoneXchange.Services.Core;
 using PhoneXchange.Services.Core.Interfaces;
 using PhoneXchange.Web.ViewModels.Ad;
 using System.Security.Claims;
@@ -9,17 +10,26 @@ namespace PhoneXchange.Web.Controllers
     {
         private readonly IAdService adService;
         private readonly IBrandService brandService;
+        private readonly IFavoriteAdService favoriteAdService;
 
-        public AdsController(IAdService adService, IBrandService brandService)
+        public AdsController(IAdService adService, IBrandService brandService, IFavoriteAdService favoriteAdService)
         {
             this.adService = adService;
             this.brandService = brandService;
+            this.favoriteAdService = favoriteAdService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchTerm, int page = 1, int pageSize = 8)
         {
-            var ads = await adService.GetAllAsync();
+            var vm = await adService.GetFilteredAdsAsync(searchTerm, page, pageSize);
+            return View(vm);
+        }
+        [HttpGet]
+        public async Task<IActionResult> My()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var ads = await adService.GetAdsByUserAsync(userId); // създаваме тази услуга след малко
             return View(ads);
         }
 
@@ -54,12 +64,20 @@ namespace PhoneXchange.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var ad = await adService.GetDetailsByIdAsync(id); 
+            var ad = await adService.GetDetailsByIdAsync(id);
             if (ad == null)
                 return NotFound();
 
-            return View(ad); 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                ad.IsFavorite = await favoriteAdService.IsFavoriteAsync(userId, ad.Id);
+            }
+
+            return View(ad);
         }
+
 
 
         [HttpGet]

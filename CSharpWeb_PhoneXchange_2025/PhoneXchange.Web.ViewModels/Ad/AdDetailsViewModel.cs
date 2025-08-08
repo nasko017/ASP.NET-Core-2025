@@ -23,6 +23,8 @@ namespace PhoneXchange.Web.ViewModels.Ad
         public int ReviewsCount { get; set; }
         public double AvgRating { get; set; }
         public List<ReviewViewModel> Reviews { get; set; } = new();
+
+        public bool IsFavorite { get; set; }
     }
 
 

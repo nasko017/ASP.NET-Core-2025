@@ -12,7 +12,7 @@ using PhoneXchange.Web.Data;
 namespace PhoneXchange.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250804130547_Initial")]
+    [Migration("20250806132422_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

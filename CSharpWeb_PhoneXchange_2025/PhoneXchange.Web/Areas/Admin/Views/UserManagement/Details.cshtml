@@ -1,0 +1,24 @@
+﻿@model PhoneXchange.Data.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Детайли за потребител";
+}
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-3 text-primary">@ViewData["Title"]</h1>
+
+    <dl class="row">
+        <dt class="col-sm-3">Потребителско име</dt>
+        <dd class="col-sm-9">@Model.UserName</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+    </dl>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Назад
+    </a>
+</div>

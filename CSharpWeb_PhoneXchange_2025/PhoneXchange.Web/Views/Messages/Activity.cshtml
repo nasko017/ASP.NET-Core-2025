@@ -1,0 +1,44 @@
+﻿@model IEnumerable<PhoneXchange.Web.ViewModels.Message.MessageActivityViewModel>
+
+@{
+    ViewData["Title"] = "Моята активност";
+}
+
+<h2 class="mb-4">@ViewData["Title"]</h2>
+
+@if (!Model.Any())
+{
+    <p>Нямате съобщения до момента.</p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Обява</th>
+                <th>Съобщение</th>
+                <th>Изпратено</th>
+                <th>От</th>
+                <th>До</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var msg in Model)
+            {
+                <tr>
+                    <td>@msg.AdTitle</td>
+                    <td>@msg.Content</td>
+                    <td>@msg.SentOn.ToString("g")</td>
+                    <td>@msg.FromEmail</td>
+                    <td>@msg.ToEmail</td>
+                    <td>
+                        <a asp-controller="Ads" asp-action="Details" asp-route-id="@msg.AdId" class="btn btn-sm btn-outline-primary">
+                            Към обявата
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

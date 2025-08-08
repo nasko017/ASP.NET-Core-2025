@@ -13,7 +13,7 @@ namespace PhoneXchange.Data.Repository
             : base(dbContext)
         {
             context = dbContext;
-        } 
+        }
 
         //public override async ValueTask<Ad?> GetByIdAsync(int id)
         //{
@@ -28,8 +28,10 @@ namespace PhoneXchange.Data.Repository
                     .ThenInclude(p => p.Brand)
                 .Include(a => a.Reviews)
                     .ThenInclude(r => r.Author)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
+
 
 
     }

@@ -1,10 +1,12 @@
-﻿@model IEnumerable<PhoneXchange.Web.ViewModels.Ad.AdViewModel>
+﻿@using PhoneXchange.Web.ViewModels.Ad
 @using Microsoft.AspNetCore.Identity
 @using PhoneXchange.Data.Models
+@model AdsListViewModel
 @inject UserManager<ApplicationUser> UserManager
 
 @{
     var currentUserId = UserManager.GetUserId(User);
+
     ViewData["Title"] = "Всички обяви";
 }
 
@@ -17,9 +19,9 @@
 <!-- 🔍 Търсачка -->
 <div class="row justify-content-center mb-4">
     <div class="col-md-8">
-        <form method="get" action="/Ads">
+        <form method="get" asp-action="Index" asp-controller="Ads">
             <div class="input-group input-group-lg">
-                <input type="text" name="searchTerm" class="form-control" placeholder="Търси по модел или марка...">
+                <input type="text" name="searchTerm" value="@Model?.SearchTerm" class="form-control" placeholder="Търси по модел или марка...">
                 <button class="btn btn-primary" type="submit">Търси</button>
             </div>
         </form>
@@ -27,67 +29,122 @@
 </div>
 
 <!-- 🆕 Последни 3 обяви -->
-<h3 class="mb-4 text-center">📢 Последни обяви</h3>
-<div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-    @foreach (var ad in Model.Take(3))
-    {
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <img src="@(ad.ImageUrls.FirstOrDefault() ?? "https://via.placeholder.com/400x250")"
-                     class="card-img-top" alt="Снимка">
-                <div class="card-body">
-                    <h5 class="card-title">@ad.Title</h5>
-                    <p class="card-text text-muted">@ad.Description</p>
-                    <p class="fw-bold">@ad.Price лв.</p>
-                    <a asp-controller="Ads" asp-action="Details" asp-route-id="@ad.Id" class="btn btn-outline-primary w-100">Виж детайли</a>
+@if (Model?.Ads != null && Model.Ads.Any())
+
+{
+    <h3 class="mb-4 text-center">📢 Последни обяви</h3>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        @foreach (var ad in Model.Ads.Take(3))
+
+        {
+
+            var img = (ad.ImageUrls != null && ad.ImageUrls.Any())
+
+            ? ad.ImageUrls.First()
+
+            : "https://via.placeholder.com/400x250?text=No+Image";
+
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="@img" class="card-img-top" alt="@ad.Title">
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate" title="@ad.Title">@ad.Title</h5>
+                        <p class="card-text text-muted text-truncate" title="@ad.Description">@ad.Description</p>
+                        <p class="fw-bold">@ad.Price.ToString("0.00") лв.</p>
+                        <a asp-controller="Ads" asp-action="Details" asp-route-id="@ad.Id" class="btn btn-outline-primary w-100">Виж детайли</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
-</div>
-
-<!-- 📋 Таблица с всички обяви -->
-<h3 class="mb-3">📄 Всички обяви</h3>
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Заглавие</th>
-            <th>Описание</th>
-            <th>Цена</th>
-            <th>Снимка</th>
-            <th>Действия</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var ad in Model)
-        {
-            <tr>
-                <td>@ad.Title</td>
-                <td>@ad.Description</td>
-                <td>@ad.Price лв.</td>
-                <td>
-                    @if (ad.ImageUrls != null && ad.ImageUrls.Any())
-                    {
-                        <img src="@ad.ImageUrls.First()" alt="Снимка" style="max-width:100px;" />
-                    }
-                </td>
-                <td>
-                    <a asp-controller="Ads" asp-action="Details" asp-route-id="@ad.Id" class="btn btn-sm btn-info">Детайли</a>
-                    @if (ad.OwnerId == currentUserId || User.IsInRole("Admin"))
-                    {
-                        <a asp-controller="Ads" asp-action="Edit" asp-route-id="@ad.Id" class="btn btn-sm btn-warning">Редакция</a>
-                        <a asp-controller="Ads" asp-action="Delete" asp-route-id="@ad.Id" class="btn btn-sm btn-danger">Изтрий</a>
-                    }
-                </td>
-            </tr>
         }
-    </tbody>
-</table>
+    </div>
+}
+
+<!-- 📋 Списък с обяви (текуща страница) -->
+<h3 class="mb-3">📄 Всички обяви</h3>
+
+@if (Model?.Ads != null && Model.Ads.Any())
+
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Заглавие</th>
+                <th>Описание</th>
+                <th>Цена</th>
+                <th>Снимка</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ad in Model.Ads)
+
+            {
+                <tr>
+                    <td class="text-truncate" style="max-width:220px" title="@ad.Title">@ad.Title</td>
+                    <td class="text-truncate" style="max-width:320px" title="@ad.Description">@ad.Description</td>
+                    <td>@ad.Price.ToString("0.00") лв.</td>
+                    <td>
+                        @if (ad.ImageUrls != null && ad.ImageUrls.Any())
+
+                        {
+                            <img src="@ad.ImageUrls.First()" alt="Снимка" style="max-width:100px;" />
+                        }
+                    </td>
+                    <td>
+                        <a asp-controller="Ads" asp-action="Details" asp-route-id="@ad.Id" class="btn btn-sm btn-info">Детайли</a>
+                        @if (ad.OwnerId == currentUserId || User.IsInRole("Admin"))
+
+                        {
+                            <a asp-controller="Ads" asp-action="Edit" asp-route-id="@ad.Id" class="btn btn-sm btn-warning">Редакция</a>
+                            <a asp-controller="Ads" asp-action="Delete" asp-route-id="@ad.Id" class="btn btn-sm btn-danger">Изтрий</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- 🔢 Пагинация -->
+    @if (Model.TotalPages > 1)
+
+    {
+        <nav class="mt-3">
+            <ul class="pagination">
+                <li class="page-item @(Model.CurrentPage > 1 ? "" : "disabled")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-page="@(Model.CurrentPage - 1)"
+                       asp-route-pageSize="@Context.Request.Query["pageSize"]">Предишна</a>
+                </li>
+
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        Страница @Model.CurrentPage от @Model.TotalPages
+                    </span>
+                </li>
+
+                <li class="page-item @(Model.CurrentPage < Model.TotalPages ? "" : "disabled")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-page="@(Model.CurrentPage + 1)"
+                       asp-route-pageSize="@Context.Request.Query["pageSize"]">Следваща</a>
+                </li>
+            </ul>
+        </nav>
+    }
+}
+
+else
+
+{
+    <div class="alert alert-warning">Няма обяви по зададените критерии.</div>
+}
 
 <!-- ➕ Добавяне на нова обява -->
 <a asp-controller="Ads" asp-action="Create" class="btn btn-primary mt-3">Добави нова обява</a>
 
-<!-- Footer -->
 <footer class="bg-light text-center py-4 mt-5">
     <p class="mb-0">&copy; @DateTime.Now.Year PhoneXchange | Всички права запазени</p>
 </footer>

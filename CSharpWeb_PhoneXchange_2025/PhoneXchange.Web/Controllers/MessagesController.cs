@@ -79,6 +79,15 @@ namespace PhoneXchange.Web.Controllers
             var messages = await messageService.GetSentMessagesAsync(userId);
             return View(messages);
         }
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Activity()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var messages = await messageService.GetUserActivityAsync(userId);
+            return View(messages);
+        }
+
 
 
     }

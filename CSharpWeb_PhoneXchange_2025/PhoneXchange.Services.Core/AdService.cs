@@ -6,6 +6,7 @@ using PhoneXchange.Web.ViewModels.Review;
 
 namespace PhoneXchange.Services.Core
 {
+    using Microsoft.EntityFrameworkCore;
     using PhoneXchange.GCommon.Helpers;
     public class AdService : IAdService
     {
@@ -74,6 +75,21 @@ namespace PhoneXchange.Services.Core
             await adRepository.AddAsync(ad);
         }
 
+        public async Task<IEnumerable<AdListViewModel>> GetAdsByUserAsync(string userId)
+        {
+            return await adRepository
+                .GetAllAttached()
+                .Where(a => a.OwnerId == userId)
+                .Select(a => new AdListViewModel
+                {
+                    Id = a.Id,
+                    Title = a.Title,
+                    Price = a.Price,
+                    ImageUrl = ImageUrlHelper.Deserialize(a.Phone.ImageUrlsSerialized).FirstOrDefault() ?? string.Empty
+                })
+                .ToListAsync();
+        }
+
         public async Task<AdDetailsViewModel?> GetDetailsByIdAsync(int id)
         {
             var ad = await adRepository.GetByIdWithDetailsAsync(id);
@@ -128,5 +144,41 @@ namespace PhoneXchange.Services.Core
                 await adRepository.HardDeleteAsync(ad);
             }
         }
+
+        public async Task<AdsListViewModel> GetFilteredAdsAsync(string? searchTerm, int page, int pageSize)
+        {
+            var query = adRepository.GetAllAttached();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(a => a.Title.Contains(searchTerm) || a.Description.Contains(searchTerm));
+            }
+
+            int totalCount = await query.CountAsync();
+
+            var ads = await query
+                .OrderByDescending(a => a.CreatedOn)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(a => new AdViewModel
+                {
+                    Id = a.Id,
+                    Title = a.Title,
+                    Description = a.Description,
+                    Price = a.Price,
+                    ImageUrls = a.Phone != null ? ImageUrlHelper.Deserialize(a.Phone.ImageUrlsSerialized) : new List<string>(),
+                    OwnerId = a.OwnerId
+                })
+                .ToListAsync();
+
+            return new AdsListViewModel
+            {
+                Ads = ads,
+                SearchTerm = searchTerm,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            };
+        }
+
     }
 }

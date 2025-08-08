@@ -38,6 +38,7 @@ namespace PhoneXchange.Web.Areas.Admin.Controllers
 
         // Изтриване (POST)
         [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var user = await _userManager.FindByIdAsync(id);

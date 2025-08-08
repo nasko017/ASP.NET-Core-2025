@@ -1,4 +1,40 @@
 ﻿@{
     ViewData["Title"] = "Admin Dashboard";
 }
-<h2>Добре дошъл в админ панела!</h2>
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container mt-4">
+    <h1 class="mb-3 text-primary">Админ Панел</h1>
+    <p class="lead">Добре дошъл, @User.Identity?.Name!</p>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Управление на потребители</h5>
+                    <p class="card-text">Виж списъка с всички потребители, редактирай и изтривай акаунти.</p>
+                    <a asp-area="Admin" asp-controller="UserManagement" asp-action="Index" class="btn btn-primary">
+                        Отиди към потребителите
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Управление на обяви</h5>
+                    <p class="card-text">Преглеждай, одобрявай или премахвай обяви.</p>
+                    <a asp-area="Admin" asp-controller="Ads" asp-action="Index" class="btn btn-primary">
+                        Отиди към обявите
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

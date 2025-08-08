@@ -8,5 +8,7 @@ namespace PhoneXchange.Services.Core.Interfaces
         Task<List<MessageViewModel>> GetMessagesAsync(string userId);
         Task<List<MessageViewModel>> GetSentMessagesAsync(string userId);
 
+        Task<IEnumerable<MessageActivityViewModel>> GetUserActivityAsync(string userId);
+
     }
 }

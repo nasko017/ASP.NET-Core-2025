@@ -41,6 +41,7 @@
 <hr />
 
 <h4>Ревюта (общо @Model.ReviewsCount)</h4>
+
 @if (Model.Reviews.Any())
 
 {
@@ -64,11 +65,39 @@ else
     <p>Няма налични ревюта.</p>
 }
 
-<hr />
-
 @if (isLoggedIn && !isOwner)
 
 {
+    <hr />
+    <h4>Остави ревю за тази обява</h4>
+
+    <form asp-controller="Reviews" asp-action="Add" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="AdId" value="@Model.Id" />
+
+        <div class="mb-3">
+            <label for="Rating" class="form-label">Оценка (1-5):</label>
+            <input type="number" name="Rating" class="form-control" min="1" max="5" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="Comment" class="form-label">Коментар:</label>
+            <textarea name="Comment" class="form-control" required maxlength="1000"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success">Изпрати ревю</button>
+    </form>
+
+    <hr />
+    <form asp-controller="Favorites" asp-action="Toggle" method="post" class="mt-3">
+        <input type="hidden" name="adId" value="@Model.Id" />
+        <button type="submit" class="btn @(Model.IsFavorite ? "btn-warning" : "btn-outline-warning")">
+            <i class="bi @(Model.IsFavorite ? "bi-star-fill" : "bi-star")"></i>
+            @(Model.IsFavorite ? "Премахни от любими" : "Добави в любими")
+        </button>
+    </form>
+
+    <hr />
     <h4>Изпрати съобщение до продавача</h4>
     <form asp-action="Send" asp-controller="Messages" method="post">
         @Html.AntiForgeryToken()
@@ -88,5 +117,5 @@ else
 else if (!isLoggedIn)
 
 {
-    <p class="text-muted mt-4">Влезте в профила си, за да можете да изпращате съобщения.</p>
+    <p class="text-muted mt-4">Влезте в профила си, за да можете да изпращате съобщения, ревюта и да добавяте в любими.</p>
 }

@@ -23,10 +23,11 @@ namespace PhoneXchange.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var ads = await adService.GetAllAsync();
-            var latestAds = ads.OrderByDescending(a => a.Id).Take(3); // Последните 3
-
-            return View(latestAds);
+            var latest = await adService.GetFilteredAdsAsync(
+                searchTerm: null,
+                page: 1,
+                pageSize: 3);
+            return View(latest.Ads);
         }
 
         public IActionResult Privacy()

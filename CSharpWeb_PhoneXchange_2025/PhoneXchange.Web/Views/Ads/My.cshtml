@@ -1,0 +1,30 @@
+﻿@model IEnumerable<PhoneXchange.Web.ViewModels.Ad.AdListViewModel>
+
+@{
+    ViewData["Title"] = "Моите обяви";
+}
+
+<h2 class="mb-4">@ViewData["Title"]</h2>
+
+@if (!Model.Any())
+{
+    <p>Нямате качени обяви.</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var ad in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <img src="@ad.ImageUrl" class="card-img-top" alt="Снимка" />
+                    <div class="card-body">
+                        <h5 class="card-title">@ad.Title</h5>
+                        <p class="card-text fw-bold">@ad.Price лв.</p>
+                        <a asp-controller="Ads" asp-action="Details" asp-route-id="@ad.Id" class="btn btn-primary">Виж</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

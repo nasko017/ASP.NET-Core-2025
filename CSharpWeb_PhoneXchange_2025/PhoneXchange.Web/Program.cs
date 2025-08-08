@@ -19,7 +19,6 @@ namespace PhoneXchange.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
@@ -35,7 +34,7 @@ namespace PhoneXchange.Web
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredUniqueChars = 0;
             })
-              .AddRoles<IdentityRole>() // ако използваш роли
+              .AddRoles<IdentityRole>()
               .AddEntityFrameworkStores<ApplicationDbContext>()
               .AddDefaultTokenProviders();
 
@@ -45,17 +44,16 @@ namespace PhoneXchange.Web
             builder.Services.AddScoped<IAdRepository, AdRepository>();
             builder.Services.AddScoped<IBrandRepository, BrandRepository>();
             builder.Services.AddScoped<IPhoneRepository, PhoneRepository>();
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
-
+            builder.Services.AddScoped<IFavoriteAdRepository, FavoriteAdRepository>();
 
             builder.Services.AddScoped<IAdService, AdService>();
             builder.Services.AddScoped<IBrandService, BrandService>();
             builder.Services.AddScoped<IPhoneService, PhoneService>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<IMessageService, MessageService>();
-
-
-
-
+            builder.Services.AddScoped<IFavoriteAdService, FavoriteAdService>();
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
@@ -81,13 +79,18 @@ namespace PhoneXchange.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
-            using (var scope = app.Services.CreateScope())
+
+            if (app.Environment.IsDevelopment())
             {
+                using var scope = app.Services.CreateScope();
                 var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
                 await seeder.SeedAsync();
             }
+
+
 
             app.MapControllerRoute(
                 name: "default",
