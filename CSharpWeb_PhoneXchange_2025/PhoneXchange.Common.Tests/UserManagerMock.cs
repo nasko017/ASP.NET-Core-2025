@@ -1,4 +1,4 @@
-﻿namespace PhoneXchange.Common.Tests
+﻿namespace PhoneXchange.Tests.Common
 {
     using Microsoft.AspNetCore.Identity;
     using Moq;

@@ -1,4 +1,8 @@
-﻿using Moq;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Moq;
+using NUnit.Framework;
 using PhoneXchange.Common.Tests;
 using PhoneXchange.Data.Models;
 using PhoneXchange.Data.Repository.Interfaces;
@@ -32,7 +36,7 @@ namespace PhoneXchange.Services.Tests
         }
 
         [Test]
-        public async Task GetReviewsForAdAsync_Projects_To_ViewModels()
+        public async Task GetReviewsForAdAsync_Projects_To_VMs()
         {
             using var db = TestDb.NewContext();
             db.Set<Review>().Add(new Review
@@ -53,6 +57,7 @@ namespace PhoneXchange.Services.Tests
 
             Assert.That(vms.Count(), Is.EqualTo(1));
             Assert.That(vms.First().Rating, Is.EqualTo(5));
+            Assert.That(vms.First().AuthorEmail, Is.EqualTo("x@y.z"));
         }
     }
 }

@@ -56,29 +56,25 @@ namespace PhoneXchange.Services.Core
 
         public async Task<IEnumerable<FavoriteAdViewModel>> GetFavoritesByUserAsync(string userId)
         {
-            var favoriteData = await favoriteAdRepository
-                .GetAllAttached()
-                .Where(f => f.ApplicationUserId == userId)
-                .Select(f => new
-                {
-                    f.Ad.Id,
-                    f.Ad.Title,
-                    f.Ad.Price,
-                    f.Ad.Phone.ImageUrlsSerialized
-                })
-                .ToListAsync();
+            var favs = favoriteAdRepository.GetAllAttached()
+                          .Where(f => f.ApplicationUserId == userId);
 
-            var favorites = favoriteData
-                .Select(f => new FavoriteAdViewModel
+            var query =
+                from f in favs
+                join a in adRepository.GetAllAttached() on f.AdId equals a.Id
+                select new FavoriteAdViewModel
                 {
-                    AdId = f.Id,
-                    Title = f.Title,
-                    Price = f.Price,
-                    ImageUrl = ImageUrlHelper.Deserialize(f.ImageUrlsSerialized).FirstOrDefault() ?? string.Empty
-                });
+                    AdId = a.Id,
+                    Title = a.Title!,
+                    Price = a.Price,
+                    ImageUrl = a.Phone != null
+                        ? (ImageUrlHelper.Deserialize(a.Phone.ImageUrlsSerialized).FirstOrDefault() ?? "")
+                        : ""
+                };
 
-            return favorites;
+            return await query.ToListAsync();
         }
+
 
     }
 }

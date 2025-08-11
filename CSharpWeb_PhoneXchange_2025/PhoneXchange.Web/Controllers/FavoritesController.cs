@@ -16,6 +16,7 @@ namespace PhoneXchange.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Toggle(int adId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

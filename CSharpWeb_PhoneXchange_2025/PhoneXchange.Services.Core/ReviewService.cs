@@ -31,21 +31,19 @@ namespace PhoneXchange.Services.Core
 
         public async Task<IEnumerable<ReviewViewModel>> GetReviewsForAdAsync(int adId)
         {
-            var reviews = await reviewRepository
+            return await reviewRepository
                 .GetAllAttached()
                 .Where(r => r.AdId == adId)
-                .Include(r => r.Author)
                 .Select(r => new ReviewViewModel
                 {
                     Id = r.Id,
                     Comment = r.Comment,
                     Rating = r.Rating,
                     CreatedOn = r.CreatedOn,
-                    AuthorEmail = r.Author.Email
+                    AuthorEmail = (r.Author == null ? null : r.Author.Email) ?? "Непознат"
                 })
                 .ToListAsync();
-
-            return reviews;
         }
+
     }
 }

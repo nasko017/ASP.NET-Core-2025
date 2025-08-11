@@ -25,21 +25,16 @@ namespace PhoneXchange.Data.Seeding
 
         public async Task SeedAsync()
         {
-            // 1) Миграции
             await _context.Database.MigrateAsync();
 
-            // 2) Роли
             await EnsureRolesAsync("Admin", "User");
 
-            // 3) Админ акаунт (create-if-missing, без reset ако вече съществува)
             await EnsureAdminAsync(
                 email: "admin@phones.com",
                 password: "Admin!23456");
 
-            // 4) Брандове
             await SeedBrandsAsync();
 
-            // 5) Демо обяви
             await SeedAdsAsync();
         }
 
@@ -60,7 +55,7 @@ namespace PhoneXchange.Data.Seeding
                 admin = new ApplicationUser
                 {
                     Email = email,
-                    UserName = email,   // важно: username = email
+                    UserName = email,  
                     EmailConfirmed = true
                 };
 

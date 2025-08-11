@@ -92,32 +92,34 @@ namespace PhoneXchange.Services.Core
 
         public async Task<AdDetailsViewModel?> GetDetailsByIdAsync(int id)
         {
-            var ad = await adRepository.GetByIdWithDetailsAsync(id);
-            if (ad == null) return null;
-
-            return new AdDetailsViewModel
-            {
-                Id = ad.Id,
-                Title = ad.Title,
-                Description = ad.Description,
-                Price = ad.Price,
-                Model = ad.Phone.Model,
-                OS = ad.Phone.OS,
-                IsNew = ad.Phone.IsNew,
-                BrandName = ad.Phone.Brand.Name,
-                ImageUrls = ImageUrlHelper.Deserialize(ad.Phone.ImageUrlsSerialized),
-                OwnerId = ad.OwnerId,
-                ReviewsCount = ad.Reviews.Count,
-                AvgRating = ad.Reviews.Any() ? ad.Reviews.Average(r => r.Rating) : 0,
-                Reviews = ad.Reviews.Select(r => new ReviewViewModel
+            return await adRepository
+                .GetAllAttached()
+                .Where(a => a.Id == id)
+                .Select(a => new AdDetailsViewModel
                 {
-                    AuthorEmail = r.Author?.Email ?? "Непознат",
-                    Rating = r.Rating,
-                    Comment = r.Comment,
-                    CreatedOn = r.CreatedOn
-                }).ToList()
-            };
+                    Id = a.Id,
+                    Title = a.Title!,
+                    Description = a.Description!,
+                    Price = a.Price,
+                    Model = a.Phone.Model,
+                    OS = a.Phone.OS,
+                    IsNew = a.Phone.IsNew,
+                    BrandName = a.Phone.Brand.Name,
+                    ImageUrls = ImageUrlHelper.Deserialize(a.Phone.ImageUrlsSerialized),
+                    OwnerId = a.OwnerId,
+                    ReviewsCount = a.Reviews.Count,
+                    AvgRating = a.Reviews.Any() ? a.Reviews.Average(r => r.Rating) : 0,
+                    Reviews = a.Reviews.Select(r => new ReviewViewModel
+                    {
+                        AuthorEmail = (r.Author != null ? r.Author.Email : null) ?? "Непознат",
+                        Rating = r.Rating,
+                        Comment = r.Comment,
+                        CreatedOn = r.CreatedOn
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
         }
+
 
         public async Task EditAsync(AdEditViewModel model)
         {

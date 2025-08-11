@@ -17,6 +17,7 @@ namespace PhoneXchange.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(ReviewCreateViewModel model)
         {
             if (!ModelState.IsValid)

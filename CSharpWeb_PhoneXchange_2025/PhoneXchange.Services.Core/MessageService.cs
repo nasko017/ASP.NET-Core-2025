@@ -41,37 +41,34 @@ namespace PhoneXchange.Services.Core
 
         public async Task<List<MessageViewModel>> GetMessagesAsync(string userId)
         {
-            var messages = await messageRepository
+            return await messageRepository
                 .GetAllAttached()
                 .Where(m => m.RecipientId == userId)
-                .Include(m => m.Sender)
                 .OrderByDescending(m => m.SentOn)
+                .Select(m => new MessageViewModel
+                {
+                    OtherUserEmail = (m.Sender == null ? null : m.Sender.Email) ?? "Непознат",
+                    Content = m.Content,
+                    SentOn = m.SentOn
+                })
                 .ToListAsync();
-
-            return messages.Select(m => new MessageViewModel
-            {
-                OtherUserEmail = m.Sender?.Email ?? "Непознат",
-                Content = m.Content,
-                SentOn = m.SentOn
-            }).ToList();
         }
 
         public async Task<List<MessageViewModel>> GetSentMessagesAsync(string userId)
         {
-            var messages = await messageRepository
+            return await messageRepository
                 .GetAllAttached()
                 .Where(m => m.SenderId == userId)
-                .Include(m => m.Recipient)
                 .OrderByDescending(m => m.SentOn)
+                .Select(m => new MessageViewModel
+                {
+                    OtherUserEmail = (m.Recipient == null ? null : m.Recipient.Email) ?? "Получател неизвестен",
+                    Content = m.Content,
+                    SentOn = m.SentOn
+                })
                 .ToListAsync();
-
-            return messages.Select(m => new MessageViewModel
-            {
-                OtherUserEmail = m.Recipient?.Email ?? "Получател неизвестен",
-                Content = m.Content,
-                SentOn = m.SentOn
-            }).ToList();
         }
+
         public async Task<IEnumerable<MessageActivityViewModel>> GetUserActivityAsync(string userId)
         {
             return await messageRepository
@@ -84,8 +81,8 @@ namespace PhoneXchange.Services.Core
                     AdTitle = m.Ad.Title,
                     Content = m.Content,
                     SentOn = m.SentOn,
-                    FromEmail = m.Sender.Email,
-                    ToEmail = m.Recipient.Email
+                    FromEmail = (m.Sender == null ? null : m.Sender.Email) ?? "Непознат",
+                    ToEmail = (m.Recipient == null ? null : m.Recipient.Email) ?? "Получател неизвестен",
                 })
                 .OrderByDescending(m => m.SentOn)
                 .ToListAsync();

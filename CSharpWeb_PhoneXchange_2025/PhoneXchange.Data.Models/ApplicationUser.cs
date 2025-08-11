@@ -10,7 +10,6 @@ namespace PhoneXchange.Data.Models
         public virtual ICollection<Ad> Ads { get; set; } = new HashSet<Ad>();
         public virtual ICollection<FavoriteAd> FavoriteAds { get; set; } = new HashSet<FavoriteAd>();
         public virtual ICollection<Message> Messages { get; set; } = new HashSet<Message>();
-
         public virtual ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
     }
 }

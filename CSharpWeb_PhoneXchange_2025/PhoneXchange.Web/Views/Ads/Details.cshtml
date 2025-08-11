@@ -90,6 +90,7 @@ else
 
     <hr />
     <form asp-controller="Favorites" asp-action="Toggle" method="post" class="mt-3">
+        @Html.AntiForgeryToken()
         <input type="hidden" name="adId" value="@Model.Id" />
         <button type="submit" class="btn @(Model.IsFavorite ? "btn-warning" : "btn-outline-warning")">
             <i class="bi @(Model.IsFavorite ? "bi-star-fill" : "bi-star")"></i>

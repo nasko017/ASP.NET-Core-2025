@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore; // за ToListAsync/CountAsync
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using PhoneXchange.Common.Tests;
@@ -44,7 +44,7 @@ namespace PhoneXchange.Services.Tests
                         Model = i % 2 == 0 ? "iPhone" : "Galaxy",
                         OS = i % 2 == 0 ? "iOS" : "Android",
                         BrandId = i % 2 == 0 ? 1 : 2,
-                        ImageUrlsSerialized = "[\"https://img" + i + "\"]"
+                        ImageUrlsSerialized = ImageUrlHelper.Serialize(new List<string> { $"https://img{i}" })
                     },
                     Reviews = new List<Review>()
                 });
@@ -67,12 +67,10 @@ namespace PhoneXchange.Services.Tests
         [Test]
         public async Task CreateAsync_Maps_And_Adds()
         {
-            using var db = TestDb.NewContext();
-
             Ad? captured = null;
             var repo = new Mock<IAdRepository>(MockBehavior.Strict);
             repo.Setup(r => r.AddAsync(It.IsAny<Ad>()))
-                .Callback<Ad>(a => { captured = a; db.Add(a); db.SaveChanges(); })
+                .Callback<Ad>(a => captured = a)
                 .Returns(Task.CompletedTask);
 
             IAdService service = new AdService(repo.Object);
@@ -119,14 +117,13 @@ namespace PhoneXchange.Services.Tests
         [Test]
         public async Task EditAsync_Updates_Title_Price_And_Images()
         {
-            // arrange: само обект в паметта
             var ad = new Ad
             {
                 Id = 1,
                 Title = "Old",
                 Description = "Old",
                 Price = 1,
-                Phone = new Phone { ImageUrlsSerialized = "[]" }
+                Phone = new Phone { ImageUrlsSerialized = ImageUrlHelper.Serialize(new List<string>()) }
             };
 
             var repo = new Mock<IAdRepository>(MockBehavior.Strict);
@@ -144,38 +141,32 @@ namespace PhoneXchange.Services.Tests
                 ImageUrls = new List<string> { "https://new" }
             };
 
-            // act
             await service.EditAsync(editVm);
 
-            // assert: промените са в обекта + извикан е UpdateAsync
             Assert.That(ad.Title, Is.EqualTo("Updated"));
             Assert.That(ad.Description, Is.EqualTo("Better"));
             Assert.That(ad.Price, Is.EqualTo(999));
-            Assert.That(ad.Phone!.ImageUrlsSerialized,
-                Is.EqualTo(ImageUrlHelper.Serialize(editVm.ImageUrls)));
-
+            Assert.That(ad.Phone!.ImageUrlsSerialized, Is.EqualTo(ImageUrlHelper.Serialize(editVm.ImageUrls)));
             repo.Verify(r => r.UpdateAsync(ad), Times.Once);
         }
-
 
         [Test]
         public async Task DeleteAsync_Deletes_When_Found()
         {
             using var db = TestDb.NewContext();
             var ad = MakeAds(1).First();
-            SeedAds(db, new[] { ad });
+            db.Set<Ad>().Add(ad);
+            await db.SaveChangesAsync();
 
             var repo = new Mock<IAdRepository>(MockBehavior.Strict);
             repo.Setup(r => r.GetByIdAsync(ad.Id)).Returns(new ValueTask<Ad?>(ad));
-            repo.Setup(r => r.HardDeleteAsync(ad))
-                .Returns(async () => { db.Remove(ad); await db.SaveChangesAsync(); return true; });
+            repo.Setup(r => r.HardDeleteAsync(ad)).ReturnsAsync(true);
 
             IAdService service = new AdService(repo.Object);
 
             await service.DeleteAsync(ad.Id);
 
             repo.Verify(r => r.HardDeleteAsync(ad), Times.Once);
-            Assert.That(await db.Set<Ad>().CountAsync(), Is.EqualTo(0));
         }
 
         [Test]
@@ -201,6 +192,8 @@ namespace PhoneXchange.Services.Tests
         [Test]
         public async Task GetDetailsByIdAsync_Returns_Details_With_Relations()
         {
+            using var db = TestDb.NewContext();
+
             var brand = new Brand { Id = 1, Name = "Apple" };
             var owner = new ApplicationUser { Id = "u-1", Email = "owner@ex.com" };
             var ad = new Ad
@@ -220,18 +213,27 @@ namespace PhoneXchange.Services.Tests
                     IsNew = true,
                     BrandId = 1,
                     Brand = brand,
-                    // !!! важно: сериализирай чрез helper-а, не ръчно JSON
                     ImageUrlsSerialized = ImageUrlHelper.Serialize(new List<string> { "https://img" })
                 },
                 Reviews = new List<Review>
-        {
-            new Review { Id = 1, AdId = 100, Rating = 5, Comment = "Great",
-                         Author = new ApplicationUser { Email = "a@b.c" }, CreatedOn = DateTime.UtcNow }
-        }
+                {
+                    new Review
+                    {
+                        Id = 1, AdId = 100, Rating = 5, Comment = "Great",
+                        Author = new ApplicationUser { Email = "a@b.c" },
+                        CreatedOn = DateTime.UtcNow
+                    }
+                }
             };
 
+            db.Set<Brand>().Add(brand);
+            db.Set<ApplicationUser>().Add(owner);
+            db.Set<Ad>().Add(ad);
+            await db.SaveChangesAsync();
+
             var repo = new Mock<IAdRepository>(MockBehavior.Strict);
-            repo.Setup(r => r.GetByIdWithDetailsAsync(100)).ReturnsAsync(ad);
+            // СЕРВИЗЪТ вече прави проекция през GetAllAttached()
+            repo.Setup(r => r.GetAllAttached()).Returns(db.Set<Ad>().AsQueryable());
 
             IAdService service = new AdService(repo.Object);
 
@@ -243,6 +245,5 @@ namespace PhoneXchange.Services.Tests
             Assert.That(vm.AvgRating, Is.EqualTo(5));
             Assert.That(vm.ImageUrls.First(), Is.EqualTo("https://img"));
         }
-
     }
 }

@@ -1,5 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Moq;
+using NUnit.Framework;
 using PhoneXchange.Common.Tests;
 using PhoneXchange.Data.Models;
 using PhoneXchange.Data.Repository.Interfaces;
@@ -57,12 +61,9 @@ namespace PhoneXchange.Services.Tests
             await db.SaveChangesAsync();
 
             var favRepo = new Mock<IFavoriteAdRepository>(MockBehavior.Strict);
-
-            // съвпадение по предикат: връщаме наличния в паметта
             favRepo.Setup(r => r.FirstOrDefaultAsync(It.IsAny<Expression<Func<FavoriteAd, bool>>>()))
                    .ReturnsAsync((Expression<Func<FavoriteAd, bool>> pred) =>
                         db.Set<FavoriteAd>().AsEnumerable().FirstOrDefault(pred.Compile()));
-
             favRepo.Setup(r => r.HardDeleteAsync(existing))
                    .Returns(async () => { db.Remove(existing); await db.SaveChangesAsync(); return true; });
 
@@ -87,20 +88,15 @@ namespace PhoneXchange.Services.Tests
                 Phone = new Phone { ImageUrlsSerialized = ImageUrlHelper.Serialize(new List<string> { "https://img" }) }
             };
             db.Set<Ad>().Add(ad);
-            db.Set<FavoriteAd>().Add(new FavoriteAd { ApplicationUserId = "u-1", AdId = 10, Ad = ad });
+            db.Set<FavoriteAd>().Add(new FavoriteAd { ApplicationUserId = "u-1", AdId = 10 }); // достатъчно е AdId (EF ще проектира през навигацията)
             await db.SaveChangesAsync();
 
             var favRepo = new Mock<IFavoriteAdRepository>(MockBehavior.Strict);
-
-            // ВАЖНО: върни IQueryable със заредени навигации
-            var q = db.Set<FavoriteAd>()
-                      .Include(f => f.Ad)
-                      .ThenInclude(a => a.Phone)
-                      .AsQueryable();
-
-            favRepo.Setup(r => r.GetAllAttached()).Returns(q);
+            favRepo.Setup(r => r.GetAllAttached()).Returns(db.Set<FavoriteAd>().AsQueryable());
 
             var adRepo = new Mock<IAdRepository>(MockBehavior.Strict);
+            adRepo.Setup(r => r.GetAllAttached()).Returns(db.Set<Ad>().AsQueryable()); // ако FavoriteAdService ползва join
+
             var svc = new FavoriteAdService(favRepo.Object, adRepo.Object);
 
             var list = await svc.GetFavoritesByUserAsync("u-1");

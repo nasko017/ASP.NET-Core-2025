@@ -15,24 +15,6 @@ namespace PhoneXchange.Data.Repository
             context = dbContext;
         }
 
-        //public override async ValueTask<Ad?> GetByIdAsync(int id)
-        //{
-        //    return await context.Ads
-        //        .Include(a => a.Phone)
-        //        .FirstOrDefaultAsync(a => a.Id == id);
-        //}
-        public async Task<Ad?> GetByIdWithDetailsAsync(int id)
-        {
-            return await context.Ads
-                .Include(a => a.Phone)
-                    .ThenInclude(p => p.Brand)
-                .Include(a => a.Reviews)
-                    .ThenInclude(r => r.Author)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.Id == id);
-        }
-
-
 
     }
 }
