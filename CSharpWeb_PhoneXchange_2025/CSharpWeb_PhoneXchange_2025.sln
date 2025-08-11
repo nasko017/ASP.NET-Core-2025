@@ -21,7 +21,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{29
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneXchange.Web.ViewModels", "PhoneXchange.Web.ViewModels\PhoneXchange.Web.ViewModels.csproj", "{774B71A7-F1F1-4873-91C1-952C9CF47206}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneXchange.Services.Core", "PhoneXchange.Services.Core\PhoneXchange.Services.Core.csproj", "{FE4DE76A-14B9-467D-B710-F38E14037849}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneXchange.Services.Core", "PhoneXchange.Services.Core\PhoneXchange.Services.Core.csproj", "{FE4DE76A-14B9-467D-B710-F38E14037849}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4A7E46DA-C139-4BB4-8F98-DA1B038A01F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneXchange.Services.Tests", "PhoneXchange.Services.Tests\PhoneXchange.Services.Tests.csproj", "{AF00B775-47B4-4496-9A8F-E90F631C0188}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneXchange.Common.Tests", "PhoneXchange.Common.Tests\PhoneXchange.Common.Tests.csproj", "{6C24BC81-D7A5-478C-96A8-B915E6886169}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +63,14 @@ Global
 		{FE4DE76A-14B9-467D-B710-F38E14037849}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE4DE76A-14B9-467D-B710-F38E14037849}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE4DE76A-14B9-467D-B710-F38E14037849}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF00B775-47B4-4496-9A8F-E90F631C0188}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF00B775-47B4-4496-9A8F-E90F631C0188}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF00B775-47B4-4496-9A8F-E90F631C0188}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF00B775-47B4-4496-9A8F-E90F631C0188}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C24BC81-D7A5-478C-96A8-B915E6886169}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C24BC81-D7A5-478C-96A8-B915E6886169}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C24BC81-D7A5-478C-96A8-B915E6886169}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C24BC81-D7A5-478C-96A8-B915E6886169}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,6 +82,8 @@ Global
 		{D8370802-F54C-40A0-AC35-4A06B30E410E} = {D2360DEC-F611-4AAF-A0C4-520F1E6E00B8}
 		{774B71A7-F1F1-4873-91C1-952C9CF47206} = {CF84812C-6748-42CA-B5FF-0EA9DE85A336}
 		{FE4DE76A-14B9-467D-B710-F38E14037849} = {29A78C1D-A6CD-471C-8B74-0704ED01AB2D}
+		{AF00B775-47B4-4496-9A8F-E90F631C0188} = {4A7E46DA-C139-4BB4-8F98-DA1B038A01F0}
+		{6C24BC81-D7A5-478C-96A8-B915E6886169} = {4A7E46DA-C139-4BB4-8F98-DA1B038A01F0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0A4C44A4-AFB7-4820-B3E0-A371F9D2708F}
