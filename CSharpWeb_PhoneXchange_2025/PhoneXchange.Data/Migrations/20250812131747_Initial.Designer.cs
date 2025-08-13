@@ -12,7 +12,7 @@ using PhoneXchange.Web.Data;
 namespace PhoneXchange.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250806132422_Initial")]
+    [Migration("20250812131747_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -597,7 +597,7 @@ namespace PhoneXchange.Data.Migrations
                     b.HasOne("PhoneXchange.Data.Models.Brand", "Brand")
                         .WithMany("Phones")
                         .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Ad");

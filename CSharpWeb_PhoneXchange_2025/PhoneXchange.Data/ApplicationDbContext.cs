@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PhoneXchange.Data.Models;
-using System.Numerics;
 
 namespace PhoneXchange.Web.Data
 {
@@ -61,6 +60,12 @@ namespace PhoneXchange.Web.Data
                 .HasMaxLength(50);
 
             builder.Entity<Phone>()
+                .HasOne(p => p.Brand)
+                .WithMany(b => b.Phones)
+                .HasForeignKey(p => p.BrandId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Phone>()
                 .Property(p => p.OS)
                 .IsRequired()
                 .HasMaxLength(30);
@@ -68,7 +73,7 @@ namespace PhoneXchange.Web.Data
             builder.Entity<Phone>()
                 .Property(p => p.ImageUrlsSerialized)
                 .HasColumnName("ImageUrls")
-                .HasMaxLength(1000); // serialized string
+                .HasMaxLength(1000);
 
             // --- Brand ---
             builder.Entity<Brand>()
@@ -116,7 +121,7 @@ namespace PhoneXchange.Web.Data
 
             builder.Entity<Order>()
                 .Property(o => o.Status)
-                .HasConversion<string>() // enum -> string
+                .HasConversion<string>()
                 .HasMaxLength(20);
 
             builder.Entity<Order>()

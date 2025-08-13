@@ -25,9 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneXchange.Services.Core"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4A7E46DA-C139-4BB4-8F98-DA1B038A01F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneXchange.Services.Tests", "PhoneXchange.Services.Tests\PhoneXchange.Services.Tests.csproj", "{AF00B775-47B4-4496-9A8F-E90F631C0188}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneXchange.Services.Tests", "PhoneXchange.Services.Tests\PhoneXchange.Services.Tests.csproj", "{AF00B775-47B4-4496-9A8F-E90F631C0188}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneXchange.Common.Tests", "PhoneXchange.Common.Tests\PhoneXchange.Common.Tests.csproj", "{6C24BC81-D7A5-478C-96A8-B915E6886169}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneXchange.Common.Tests", "PhoneXchange.Common.Tests\PhoneXchange.Common.Tests.csproj", "{6C24BC81-D7A5-478C-96A8-B915E6886169}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

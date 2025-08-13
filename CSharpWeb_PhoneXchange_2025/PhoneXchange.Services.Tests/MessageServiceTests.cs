@@ -64,56 +64,75 @@ namespace PhoneXchange.Services.Tests
         public async Task GetMessagesAsync_Returns_Inbox()
         {
             using var db = TestDb.NewContext();
-            db.Set<Message>().Add(new Message
+
+            // users
+            var sender = new ApplicationUser { Id = "u-9", Email = "u-9@ex.com", UserName = "u-9@ex.com", EmailConfirmed = true };
+            var recipient = new ApplicationUser { Id = "u-1", Email = "u-1@ex.com", UserName = "u-1@ex.com", EmailConfirmed = true };
+            db.AddRange(sender, recipient);
+
+            // message (не е нужно да създаваме Ad в InMemory; AdId е достатъчно)
+            db.Add(new Message
             {
                 Id = 1,
-                SenderId = "u-9",
-                RecipientId = "u-1",
+                SenderId = sender.Id,
+                RecipientId = recipient.Id,
                 Content = "hello",
-                AdId = 1,
-                Sender = new ApplicationUser { Id = "u-9", Email = "u-9@ex.com" },
-                Recipient = new ApplicationUser { Id = "u-1", Email = "u-1@ex.com" },
-                Ad = new Ad { Id = 1, Title = "iPhone" }
+                AdId = 123
             });
+
             await db.SaveChangesAsync();
 
             var msgRepo = new Mock<IMessageRepository>(MockBehavior.Strict);
-            msgRepo.Setup(r => r.GetAllAttached()).Returns(db.Set<Message>().AsQueryable());
+            // КРИТИЧНО: в теста връщаме IQueryable със зареден Sender
+            msgRepo.Setup(r => r.GetAllAttached())
+                   .Returns(db.Set<Message>().Include(m => m.Sender).AsQueryable());
 
-            var userMgr = UserManagerMock.Create();
+            var userMgr = UserManagerMock.Create(); // не се ползва тук, но е нужен за конструктора
             var svc = new MessageService(msgRepo.Object, userMgr.Object);
 
-            var list = await svc.GetMessagesAsync("u-1");
-            Assert.That(list.Count, Is.EqualTo(1));
-            Assert.That(list.First().OtherUserEmail, Is.EqualTo("u-9@ex.com"));
+            var list = await svc.GetMessagesAsync(recipient.Id);
+
+            Assert.That(list, Has.Count.EqualTo(1));
+            Assert.That(list[0].OtherUserEmail, Is.EqualTo(sender.Email));
+            Assert.That(list[0].Content, Is.EqualTo("hello"));
         }
+
+
 
         [Test]
         public async Task GetSentMessagesAsync_Returns_Sent()
         {
             using var db = TestDb.NewContext();
-            db.Set<Message>().Add(new Message
+
+            var sender = new ApplicationUser { Id = "u-1", Email = "u-1@ex.com", UserName = "u-1@ex.com", EmailConfirmed = true };
+            var recipient = new ApplicationUser { Id = "u-9", Email = "u-9@ex.com", UserName = "u-9@ex.com", EmailConfirmed = true };
+            db.AddRange(sender, recipient);
+
+            db.Add(new Message
             {
                 Id = 2,
-                SenderId = "u-1",
-                RecipientId = "u-9",
+                SenderId = sender.Id,
+                RecipientId = recipient.Id,
                 Content = "hello",
-                AdId = 1,
-                Sender = new ApplicationUser { Id = "u-1", Email = "u-1@ex.com" },
-                Recipient = new ApplicationUser { Id = "u-9", Email = "u-9@ex.com" },
-                Ad = new Ad { Id = 1, Title = "iPhone" }
+                AdId = 456
             });
+
             await db.SaveChangesAsync();
 
             var msgRepo = new Mock<IMessageRepository>(MockBehavior.Strict);
-            msgRepo.Setup(r => r.GetAllAttached()).Returns(db.Set<Message>().AsQueryable());
+            // Тук ни трябва Recipient
+            msgRepo.Setup(r => r.GetAllAttached())
+                   .Returns(db.Set<Message>().Include(m => m.Recipient).AsQueryable());
 
             var userMgr = UserManagerMock.Create();
             var svc = new MessageService(msgRepo.Object, userMgr.Object);
 
-            var list = await svc.GetSentMessagesAsync("u-1");
-            Assert.That(list.Count, Is.EqualTo(1));
-            Assert.That(list.First().OtherUserEmail, Is.EqualTo("u-9@ex.com"));
+            var list = await svc.GetSentMessagesAsync(sender.Id);
+
+            Assert.That(list, Has.Count.EqualTo(1));
+            Assert.That(list[0].OtherUserEmail, Is.EqualTo(recipient.Email));
+            Assert.That(list[0].Content, Is.EqualTo("hello"));
         }
+
     }
 }

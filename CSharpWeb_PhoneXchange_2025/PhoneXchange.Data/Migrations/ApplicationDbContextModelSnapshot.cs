@@ -594,7 +594,7 @@ namespace PhoneXchange.Data.Migrations
                     b.HasOne("PhoneXchange.Data.Models.Brand", "Brand")
                         .WithMany("Phones")
                         .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Ad");

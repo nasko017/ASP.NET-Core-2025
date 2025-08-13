@@ -29,14 +29,42 @@ namespace PhoneXchange.Services.Core
             await phoneRepository.AddAsync(phone);
         }
 
-        Task<IEnumerable<PhoneViewModel>> IPhoneService.GetAllAsync()
+        public async Task<IEnumerable<PhoneViewModel>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var phones = await phoneRepository.GetAllAsync();
+
+            return phones.Select(p => new PhoneViewModel
+            {
+                Id = p.Id,
+                Model = p.Model,
+                OS = p.OS,
+                IsNew = p.IsNew,
+                BrandId = p.BrandId,
+                BrandName = p.Brand != null ? p.Brand.Name : string.Empty,
+                ImageUrls =ImageUrlHelper.Deserialize(p.ImageUrlsSerialized)
+            });
         }
 
-        Task<PhoneViewModel?> IPhoneService.GetByIdAsync(int id)
+        public async Task<PhoneViewModel?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var phone = await phoneRepository.GetByIdAsync(id);
+
+            if (phone == null)
+            {
+                return null;
+            }
+
+            return new PhoneViewModel
+            {
+                Id = phone.Id,
+                Model = phone.Model,
+                OS = phone.OS,
+                IsNew = phone.IsNew,
+                BrandId = phone.BrandId,
+                BrandName = phone.Brand != null ? phone.Brand.Name : string.Empty,
+                ImageUrls =ImageUrlHelper.Deserialize(phone.ImageUrlsSerialized)
+            };
         }
+
     }
 }

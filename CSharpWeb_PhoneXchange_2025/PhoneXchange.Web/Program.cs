@@ -9,7 +9,6 @@ using PhoneXchange.Services.Core.Interfaces;
 using PhoneXchange.Services.Core;
 using System.Globalization;
 using PhoneXchange.Data.Models;
-using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace PhoneXchange.Web
 {
@@ -69,8 +68,7 @@ namespace PhoneXchange.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseExceptionHandler("/Error/500");
                 app.UseHsts();
             }
 
@@ -82,6 +80,7 @@ namespace PhoneXchange.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
             if (app.Environment.IsDevelopment())
             {
@@ -89,7 +88,9 @@ namespace PhoneXchange.Web
                 var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
                 await seeder.SeedAsync();
             }
-
+            app.MapControllerRoute(
+               name: "areas",
+               pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 
             app.MapControllerRoute(
