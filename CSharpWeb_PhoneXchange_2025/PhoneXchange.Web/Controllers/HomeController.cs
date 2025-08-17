@@ -9,16 +9,11 @@ namespace PhoneXchange.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        //private readonly ILogger<HomeController> _logger;
         private readonly IAdService adService;
         public HomeController(IAdService _adService)
         {
             adService = _adService;
-        }
-        //public HomeController(ILogger<HomeController> logger)
-        //{
-        //    _logger = logger;
-        //}
+        }  
 
         [HttpGet]
         public async Task<IActionResult> Index()

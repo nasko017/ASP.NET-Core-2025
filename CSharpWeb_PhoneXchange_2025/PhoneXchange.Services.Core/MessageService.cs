@@ -21,12 +21,16 @@ namespace PhoneXchange.Services.Core
         public async Task SendAsync(string senderId, MessageCreateViewModel model)
         {
             if (senderId == model.RecipientId)
+            {
                 throw new InvalidOperationException("Не може да изпращате съобщение до себе си.");
-
+            }
+                
             var recipient = await userManager.FindByIdAsync(model.RecipientId);
             if (recipient == null)
+            {
                 throw new InvalidOperationException("Получателят не съществува.");
-
+            }
+               
             var message = new Message
             {
                 SenderId = senderId,

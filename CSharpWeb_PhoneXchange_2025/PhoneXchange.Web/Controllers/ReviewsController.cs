@@ -22,7 +22,6 @@ namespace PhoneXchange.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Optional: TempData or redirect with error
                 return RedirectToAction("Details", "Ads", new { id = model.AdId });
             }
 

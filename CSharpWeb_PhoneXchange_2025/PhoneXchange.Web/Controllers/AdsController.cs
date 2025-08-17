@@ -29,7 +29,7 @@ namespace PhoneXchange.Web.Controllers
         public async Task<IActionResult> My()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var ads = await adService.GetAdsByUserAsync(userId); // създаваме тази услуга след малко
+            var ads = await adService.GetAdsByUserAsync(userId);
             return View(ads);
         }
 
@@ -53,7 +53,7 @@ namespace PhoneXchange.Web.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
             {
-                return Unauthorized(); // или можеш да използваш RedirectToAction("Login", "Account")
+                return Unauthorized();
             }
 
             await adService.CreateAsync(viewModel, userId);
