@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PhoneXchange.Services.Core;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using PhoneXchange.GCommon;
 using PhoneXchange.Services.Core.Interfaces;
 using PhoneXchange.Web.ViewModels.Ad;
+using System.Data;
 using System.Security.Claims;
 
 namespace PhoneXchange.Web.Controllers
@@ -25,15 +27,18 @@ namespace PhoneXchange.Web.Controllers
             var vm = await adService.GetFilteredAdsAsync(searchTerm, page, pageSize);
             return View(vm);
         }
+
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> My()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var ads = await adService.GetAdsByUserAsync(userId);
+            var ads = await adService.GetAdsByUserAsync(userId!);
             return View(ads);
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Create()
         {
             ViewBag.Brands = await brandService.GetAllAsync();
@@ -41,6 +46,7 @@ namespace PhoneXchange.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AdCreateViewModel viewModel)
         {
@@ -60,7 +66,6 @@ namespace PhoneXchange.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
@@ -78,15 +83,17 @@ namespace PhoneXchange.Web.Controllers
             return View(ad);
         }
 
-
-
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
-            var ad = await adService.GetByIdAsync(id); // връща AdViewModel
+            var ad = await adService.GetByIdAsync(id);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (ad == null || (ad.OwnerId != userId && !User.IsInRole("Admin")))
+            if (ad == null)
+                return NotFound();
+
+            if (ad.OwnerId != userId && !User.IsInRole(Roles.Admin))
                 return Forbid();
 
             var model = new AdEditViewModel
@@ -101,44 +108,55 @@ namespace PhoneXchange.Web.Controllers
             return View(model);
         }
 
-
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(AdEditViewModel model)
         {
+            if (!ModelState.IsValid)
+                return View(model);
+
             var ad = await adService.GetByIdAsync(model.Id);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (ad == null || (ad.OwnerId != userId && !User.IsInRole("Admin")))
-                return Forbid();
+            if (ad == null)
+                return NotFound();
 
-            if (!ModelState.IsValid)
-                return View(model);
+            if (ad.OwnerId != userId && !User.IsInRole(Roles.Admin))
+                return Forbid();
 
             await adService.EditAsync(model);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             var ad = await adService.GetByIdAsync(id);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (ad == null || (ad.OwnerId != userId && !User.IsInRole("Admin")))
+            if (ad == null)
+                return NotFound();
+
+            if (ad.OwnerId != userId && !User.IsInRole(Roles.Admin))
                 return Forbid();
 
             return View(ad);
         }
 
         [HttpPost, ActionName("Delete")]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var ad = await adService.GetByIdAsync(id);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (ad == null || (ad.OwnerId != userId && !User.IsInRole("Admin")))
+            if (ad == null)
+                return NotFound();
+
+            if (ad.OwnerId != userId && !User.IsInRole(Roles.Admin))
                 return Forbid();
 
             await adService.DeleteAsync(id);
