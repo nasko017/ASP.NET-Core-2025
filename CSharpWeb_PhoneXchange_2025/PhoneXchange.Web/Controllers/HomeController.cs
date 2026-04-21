@@ -10,9 +10,9 @@ namespace PhoneXchange.Web.Controllers
     public class HomeController : BaseController
     {
         private readonly IAdService adService;
-        public HomeController(IAdService _adService)
+        public HomeController(IAdService adService)
         {
-            adService = _adService;
+            this.adService = adService;
         }  
 
         [HttpGet]

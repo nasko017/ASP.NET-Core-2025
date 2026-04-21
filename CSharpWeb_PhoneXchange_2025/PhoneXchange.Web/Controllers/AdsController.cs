@@ -128,7 +128,7 @@ namespace PhoneXchange.Web.Controllers
             await adService.EditAsync(model);
             return RedirectToAction(nameof(Index));
         }
-
+         
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Delete(int id)

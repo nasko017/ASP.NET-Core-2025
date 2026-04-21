@@ -143,7 +143,7 @@ namespace PhoneXchange.Services.Core
             var ad = await adRepository.GetByIdAsync(id);
             if (ad != null)
             {
-                await adRepository.HardDeleteAsync(ad);
+                await adRepository.DeleteAsync(ad);
             }
         }
 
@@ -173,7 +173,7 @@ namespace PhoneXchange.Services.Core
                 })
                 .ToListAsync();
 
-            return new AdsListViewModel
+            return new AdsListViewModel 
             {
                 Ads = ads,
                 SearchTerm = searchTerm,

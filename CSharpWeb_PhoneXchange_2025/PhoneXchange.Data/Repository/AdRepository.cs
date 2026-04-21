@@ -7,14 +7,15 @@ namespace PhoneXchange.Data.Repository
 {
     public class AdRepository : BaseRepository<Ad, int>, IAdRepository
     {
-        private readonly ApplicationDbContext context;
-
-        public AdRepository(ApplicationDbContext dbContext)
-            : base(dbContext)
+        public AdRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
-            context = dbContext;
         }
 
-
+        public override ValueTask<Ad?> GetByIdAsync(int id)
+        {
+            return new ValueTask<Ad?>(
+                DbSet.FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted)
+            );
+        }
     }
 }
