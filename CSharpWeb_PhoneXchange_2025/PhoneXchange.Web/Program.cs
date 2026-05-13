@@ -55,6 +55,7 @@ namespace PhoneXchange.Web
             builder.Services.AddScoped<IFavoriteAdService, FavoriteAdService>();
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddControllers();
             builder.Services.AddRazorPages();
 
             var app = builder.Build();
@@ -97,6 +98,7 @@ namespace PhoneXchange.Web
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
+            app.MapControllers();
 
 
 

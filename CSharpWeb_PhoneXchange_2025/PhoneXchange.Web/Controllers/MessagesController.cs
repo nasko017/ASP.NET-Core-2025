@@ -29,7 +29,7 @@ namespace PhoneXchange.Web.Controllers
 
             var messages = await messageService.GetMessagesAsync(userId);
 
-            return View(messages); // Очаква се View да е към List<MessageViewModel>
+            return View(messages); 
         }
 
         [HttpPost]
@@ -79,7 +79,6 @@ namespace PhoneXchange.Web.Controllers
             var messages = await messageService.GetSentMessagesAsync(userId);
             return View(messages);
         }
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Activity()
         {
@@ -87,8 +86,6 @@ namespace PhoneXchange.Web.Controllers
             var messages = await messageService.GetUserActivityAsync(userId);
             return View(messages);
         }
-
-
 
     }
 }

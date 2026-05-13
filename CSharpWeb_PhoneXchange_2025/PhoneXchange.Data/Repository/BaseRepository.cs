@@ -3,7 +3,6 @@ using PhoneXchange.Data.Repository.Interfaces;
 using PhoneXchange.Web.Data;
 using System.Linq.Expressions;
 using System.Reflection;
-using static Azure.Core.HttpHeader;
 
 
 namespace PhoneXchange.Data.Repository

@@ -1,7 +1,7 @@
-﻿
+﻿using System.ComponentModel.DataAnnotations;
+
 namespace PhoneXchange.Web.ViewModels.Ad
 {
-  using System.ComponentModel.DataAnnotations;
     public class AdEditViewModel
     {
         public int Id { get; set; }

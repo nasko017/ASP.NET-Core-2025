@@ -3,11 +3,12 @@ using PhoneXchange.Data.Repository.Interfaces;
 using PhoneXchange.Services.Core.Interfaces;
 using PhoneXchange.Web.ViewModels.Ad;
 using PhoneXchange.Web.ViewModels.Review;
+using Microsoft.EntityFrameworkCore;
+using PhoneXchange.GCommon.Helpers;
 
 namespace PhoneXchange.Services.Core
 {
-    using Microsoft.EntityFrameworkCore;
-    using PhoneXchange.GCommon.Helpers;
+    
     public class AdService : IAdService
     {
         private readonly IAdRepository adRepository;
@@ -153,7 +154,9 @@ namespace PhoneXchange.Services.Core
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                query = query.Where(a => a.Title.Contains(searchTerm) || a.Description.Contains(searchTerm));
+                query = query.Where(a =>
+                    (a.Title ?? string.Empty).Contains(searchTerm) ||
+                    (a.Description ?? string.Empty).Contains(searchTerm));
             }
 
             int totalCount = await query.CountAsync();
@@ -168,12 +171,14 @@ namespace PhoneXchange.Services.Core
                     Title = a.Title,
                     Description = a.Description,
                     Price = a.Price,
-                    ImageUrls = a.Phone != null ? ImageUrlHelper.Deserialize(a.Phone.ImageUrlsSerialized) : new List<string>(),
-                    OwnerId = a.OwnerId
+                    OwnerId = a.OwnerId,
+                    ImageUrls = a.Phone != null
+                        ? ImageUrlHelper.Deserialize(a.Phone.ImageUrlsSerialized)
+                        : new List<string>()
                 })
                 .ToListAsync();
 
-            return new AdsListViewModel 
+            return new AdsListViewModel
             {
                 Ads = ads,
                 SearchTerm = searchTerm,
@@ -181,6 +186,5 @@ namespace PhoneXchange.Services.Core
                 TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
             };
         }
-
     }
 }

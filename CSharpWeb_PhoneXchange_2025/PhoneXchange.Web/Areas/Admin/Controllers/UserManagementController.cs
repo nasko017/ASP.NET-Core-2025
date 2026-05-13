@@ -1,49 +1,46 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PhoneXchange.Data.Models;
 
 namespace PhoneXchange.Web.Areas.Admin.Controllers
 {
     public class UserManagementController : BaseAdminController
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public UserManagementController(UserManager<ApplicationUser> userManager)
         {
-            _userManager = userManager;
+            this.userManager = userManager;
         }
 
-        // Списък с всички потребители
         public IActionResult Index()
         {
-            var users = _userManager.Users.ToList();
+            var users = userManager.Users.ToListAsync();
             return View(users);
         }
 
-        // Детайли за потребител
         public async Task<IActionResult> Details(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
             return View(user);
         }
 
-        // Изтриване (GET)
         public async Task<IActionResult> Delete(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
             return View(user);
         }
 
-        // Изтриване (POST)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await userManager.FindByIdAsync(id);
             if (user != null)
-                await _userManager.DeleteAsync(user);
+                await userManager.DeleteAsync(user);
 
             return RedirectToAction(nameof(Index));
         }

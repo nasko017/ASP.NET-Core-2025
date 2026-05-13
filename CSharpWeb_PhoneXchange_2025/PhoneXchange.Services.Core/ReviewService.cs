@@ -6,13 +6,13 @@ using PhoneXchange.Web.ViewModels.Review;
 
 namespace PhoneXchange.Services.Core
 {
-    public class ReviewService:IReviewService
+    public class ReviewService : IReviewService
     {
         private readonly IReviewRepository reviewRepository;
 
-        public ReviewService(IReviewRepository _reviewRepository)
+        public ReviewService(IReviewRepository reviewRepository)
         {
-            reviewRepository = _reviewRepository;
+            this.reviewRepository = reviewRepository;
         }
 
         public async Task AddReviewAsync(ReviewCreateViewModel model, string userId)
