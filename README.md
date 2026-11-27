@@ -1,165 +1,253 @@
-# 📱 PhoneXchange
+# PhoneXchange
 
-> A full-featured ASP.NET Core MVC marketplace for buying and selling second-hand and new phones.
+A personal ASP.NET Core MVC project for buying and selling new and used mobile phones.
 
-![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-8.0-blue?logo=dotnet)
-![Entity Framework](https://img.shields.io/badge/Entity%20Framework%20Core-8.0-purple)
-![MS SQL Server](https://img.shields.io/badge/Database-MS%20SQL%20Server-red?logo=microsoftsqlserver)
-![NUnit](https://img.shields.io/badge/Tests-NUnit%20%2B%20Moq-green)
+Built to practise C# web development, relational databases, authentication, authorization and automated testing.
 
----
+## Overview
 
-## 📋 Overview
+PhoneXchange allows users to publish phone listings, search and filter available phones, contact sellers, save favourites and leave reviews.
 
-PhoneXchange is a marketplace web application where users can post ads for phones, browse listings, send messages to sellers, leave reviews, and manage their favourite ads. Administrators have a dedicated area for user management.
+The application uses ASP.NET Core MVC, Entity Framework Core and SQL Server, with separate projects for the web interface, business logic, data access and tests.
 
----
+The user interface is in Bulgarian. Listing prices are entered and displayed in EUR.
 
-## ✨ Features
+## Features
 
-- 🔐 **Authentication & Authorization** — Register, Login, Role-based access (Admin / User)
-- 📢 **Ads** — Create, edit, delete, and browse phone listings with pagination and search
-- 💬 **Messaging** — Users can contact sellers directly through the platform
-- ⭐ **Reviews** — Leave ratings and comments on ads
-- ❤️ **Favourites** — Save ads to a personal favourites list
-- 🛡️ **Admin Area** — Manage users and roles through a dedicated admin panel
-- 🗑️ **Soft Delete** — Deleted ads and messages are hidden, not permanently removed
-- 🌐 **REST API endpoint** — `/api/ads` for fetching ad data
+### Accounts and access control
 
----
+- Registration and login with ASP.NET Core Identity.
+- Admin and User roles.
+- Ownership checks when editing or deleting listings.
+- An administration area for managing users and roles.
 
-## 🏗️ Architecture
+### Phone listings
 
-The project follows a layered architecture with clear separation of concerns:
+- Create, edit, delete and browse listings.
+- Search by keyword.
+- Filter by brand, price range and condition.
+- Sort results and navigate through paginated listings.
+- Soft deletion of listings through EF Core global query filters.
 
-```
-PhoneXchange/
-├── PhoneXchange.Web                  # Controllers, Views, Areas, Program.cs
-├── PhoneXchange.Web.ViewModels       # View Models for all entities
-├── PhoneXchange.Services.Core        # Business logic (Service layer)
-├── PhoneXchange.Data                 # DbContext, Repositories, Migrations, Seeding
-├── PhoneXchange.Data.Models          # Domain entities
-├── PhoneXchange.Data.Common          # Shared constants and exception messages
-├── PhoneXchange.GCommon              # App-wide constants, roles, helpers
-├── PhoneXchange.Services.Tests       # Unit tests for the Service layer
-└── PhoneXchange.Common.Tests         # Shared test utilities (TestDb, Mocks)
-```
+### Image uploads
 
-### Key design decisions
+- Upload up to three images per listing.
+- Preview selected images before submitting the form.
+- Server-side checks for file size, image format and dimensions.
+- Resize large images and save them as JPEG files with generated names.
+- Keep existing images or replace them when editing a listing.
 
-- **Repository Pattern** — Generic `BaseRepository<TEntity, TKey>` with both sync and async methods, exposing `IQueryable` via `GetAllAttached()` for flexible querying at the service layer.
-- **Soft Delete** — Implemented via reflection in `BaseRepository`. Entities with an `IsDeleted` property are soft-deleted; EF Core global query filters automatically exclude them.
-- **Service Layer** — All business logic lives in dedicated services, keeping controllers thin and testable.
-- **Admin Area** — Separate MVC Area with `[Authorize(Roles = "Admin")]` base controller.
+### User interactions
 
----
+- Save listings to a favourites list.
+- Send messages to sellers.
+- Leave reviews with ratings.
+- Soft deletion of messages.
 
-## 🛠️ Tech Stack
+### Read-only API
 
-| Layer | Technology |
-|---|---|
-| Framework | ASP.NET Core 8 MVC |
+- `GET /api/ads` — retrieve listings.
+- `GET /api/ads/{id}` — retrieve a listing by ID.
+
+## Technology Stack
+
+| Area | Technology |
+| --- | --- |
+| Language | C# |
+| Web framework | ASP.NET Core 8 MVC |
 | ORM | Entity Framework Core 8 |
 | Database | Microsoft SQL Server |
 | Authentication | ASP.NET Core Identity |
-| Testing | NUnit, Moq |
-| Frontend | Razor Views, Bootstrap |
+| Frontend | Razor Views, Bootstrap, HTML, CSS, JavaScript |
+| Image processing | SixLabors.ImageSharp |
+| Testing | NUnit, Moq, EF Core InMemory |
+| Version control | Git and GitHub |
 
----
+## Project Structure
 
-## 🚀 Getting Started
+The application is located inside the `CSharpWeb_PhoneXchange_2025` directory.
 
-### Prerequisites
+```text
+ASP.NET-Core-2025/
+└── CSharpWeb_PhoneXchange_2025/
+    ├── PhoneXchange.Web
+    ├── PhoneXchange.Web.ViewModels
+    ├── PhoneXchange.Services.Core
+    ├── PhoneXchange.Data
+    ├── PhoneXchange.Data.Models
+    ├── PhoneXchange.Data.Common
+    ├── PhoneXchange.GCommon
+    ├── PhoneXchange.Services.Tests
+    └── PhoneXchange.Common.Tests
+```
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download)
-- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) (or SQL Server Express)
-- [Visual Studio 2022](https://visualstudio.microsoft.com/) or VS Code
+| Project | Responsibility |
+| --- | --- |
+| `PhoneXchange.Web` | Controllers, Razor views, Identity pages, MVC areas, image storage and application configuration |
+| `PhoneXchange.Web.ViewModels` | Models used to receive form data and display application data |
+| `PhoneXchange.Services.Core` | Application services and business operations |
+| `PhoneXchange.Data` | Database context, repositories, migrations and initial data |
+| `PhoneXchange.Data.Models` | Domain entities |
+| `PhoneXchange.Data.Common` | Shared data-layer constants |
+| `PhoneXchange.GCommon` | Application-wide constants, roles and helpers |
+| `PhoneXchange.Services.Tests` | Automated service tests |
+| `PhoneXchange.Common.Tests` | Shared test helpers and database setup |
 
-### Setup
+## Implementation Notes
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/nasko017/ASP.NET-Core-2025.git
-   cd ASP.NET-Core-2025
-   ```
+### Separation of responsibilities
 
-2. **Configure the connection string**
+Controllers handle HTTP requests, validation responses and access checks. Services handle application operations, while repositories provide access to stored data.
 
-   Open `PhoneXchange.Web/appsettings.json` and update:
-   ```json
-   "ConnectionStrings": {
-     "DefaultConnection": "Server=YOUR_SERVER;Database=PhoneXchangeDb;Trusted_Connection=True;"
-   }
-   ```
+### Repository pattern
 
-3. **Apply migrations**
-   ```bash
-   cd PhoneXchange.Web
-   dotnet ef database update
-   ```
+The generic repository provides synchronous and asynchronous operations. It also exposes queries through `GetAllAttached()`, allowing services to compose filters, sorting and pagination before executing database queries.
 
-4. **Run the application**
-   ```bash
-   dotnet run
-   ```
-   The app seeds initial data (brands, admin user) automatically on first run in Development mode.
+### Soft deletion
 
-### Default Admin Account
+The repository detects an `IsDeleted` property through reflection and marks supported entities as deleted. EF Core global query filters hide deleted listings and messages from normal queries.
 
-| Field | Value |
-|---|---|
-| Email | admin@phonexchange.com |
-| Password | *(set in seeder)* |
+### Image storage
 
----
+Image processing is handled by `AdImageStorage` in the web project.
 
-## 🧪 Running the Tests
+Uploaded files are stored in:
+
+```text
+PhoneXchange.Web/wwwroot/uploads/ads/
+```
+
+The database stores their relative URLs rather than the image files themselves.
+
+### Prices
+
+All listing prices are treated as EUR. The existing development data uses sample values and is not intended to represent historical currency conversions.
+
+## Getting Started
+
+### Requirements
+
+- .NET 8 SDK.
+- A running SQL Server instance, such as SQL Server Developer, Express or LocalDB.
+- Git.
+- Visual Studio or another editor with C# support.
+
+The connection example below uses Windows authentication and SQL Server Express LocalDB.
+
+### 1. Clone the repository
 
 ```bash
-cd PhoneXchange.Services.Tests
-dotnet test
+git clone https://github.com/nasko017/ASP.NET-Core-2025.git
+cd ASP.NET-Core-2025/CSharpWeb_PhoneXchange_2025
 ```
 
-Tests cover the Service layer using **NUnit** and **Moq** with an in-memory database for integration-style scenarios.
+Run the remaining commands from this directory.
 
----
+### 2. Configure the database connection
 
-## 📁 Project Highlights
+Store the local connection string with .NET User Secrets:
 
-### Soft Delete with Reflection
-The `BaseRepository` automatically detects if an entity has an `IsDeleted` property and sets it to `true` on delete, without any entity-specific code:
-
-```csharp
-private void PerformSoftDeleteOfEntity(TEntity entity)
-{
-    PropertyInfo? isDeletedProperty = typeof(TEntity)
-        .GetProperties()
-        .FirstOrDefault(pi => pi.Name == "IsDeleted" && pi.PropertyType == typeof(bool));
-
-    isDeletedProperty?.SetValue(entity, true);
-}
+```powershell
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=(localdb)\MSSQLLocalDB;Database=PhoneXchangeDb;Trusted_Connection=True;TrustServerCertificate=True;" --project PhoneXchange.Web
 ```
 
-### Pagination & Search
-Ads support server-side pagination and keyword search, executed directly in SQL via EF Core:
+Replace the server name and authentication settings if you use a different SQL Server instance.
 
-```csharp
-var ads = await query
-    .OrderByDescending(a => a.CreatedOn)
-    .Skip((page - 1) * pageSize)
-    .Take(pageSize)
-    .Select(a => new AdViewModel { ... })
-    .ToListAsync();
+The LocalDB example requires LocalDB to be installed. `TrustServerCertificate=True` is included for local development.
+
+### 3. Restore dependencies
+
+```bash
+dotnet restore PhoneXchange.Web
 ```
 
----
+### 4. Trust the development HTTPS certificate
 
-## 👤 Author
+```bash
+dotnet dev-certs https --trust
+```
 
-**Atanas** — [@nasko017](https://github.com/nasko017)
+### 5. Run the application
 
----
+```bash
+dotnet run --project PhoneXchange.Web --launch-profile https
+```
 
-## 📄 License
+Open the HTTPS address printed in the terminal. The current launch profile uses:
 
-This project is open source and available under the [MIT License](LICENSE).
+```text
+https://localhost:7164
+```
+
+The `https` launch profile runs the application in the Development environment.
+
+During Development startup, the application:
+
+- Applies pending EF Core migrations.
+- Ensures the Admin and User roles exist.
+- Creates the demonstration administrator if it is missing.
+- Adds missing phone brands.
+- Adds sample listings when the seeder finds no visible listings.
+
+A separate migration command is not required for this startup flow. The configured database account must have permission to apply migrations.
+
+### Local demonstration administrator
+
+The Development seeder creates an administrator with this email:
+
+```text
+admin@phones.com
+```
+
+The demonstration password is defined in `EnsureAdminAsync` inside:
+
+```text
+PhoneXchange.Data/Seeding/ApplicationDbSeeder.cs
+```
+
+This account is intended for local development. Production deployment requires separate administrator provisioning and credentials.
+
+## Running Tests
+
+From `CSharpWeb_PhoneXchange_2025`, run:
+
+```bash
+dotnet test PhoneXchange.Services.Tests
+```
+
+The test project uses NUnit and Moq. Shared test helpers provide an EF Core InMemory database.
+
+These tests check application behaviour in isolation; they do not replace testing against SQL Server or testing the complete application through a browser.
+
+## Try the Application
+
+After starting the application:
+
+1. Register a user account.
+2. Create a listing and upload images.
+3. Search, filter and sort the catalogue.
+4. Edit one of your listings.
+5. Use a second account to try favourites, messages and reviews.
+6. Verify that a regular user cannot edit another user's listing.
+
+## Current Limitations
+
+- Uploaded images are stored on the local filesystem. Deployment requires persistent storage and backups.
+- Replaced image files are currently retained on disk. Automatic cleanup of unused files is not implemented.
+- The API provides read-only listing endpoints.
+- The application is a portfolio project; it does not process payments or arrange delivery.
+- The installed ImageSharp package reports a licence requirement for Release builds. Resolve the package's licensing requirements before creating a Release deployment.
+
+## Planned Improvements
+
+- Cleanup of unused uploaded images.
+- More tests for validation and authorization scenarios.
+- Deployment with persistent image storage.
+- Screenshots and a short demonstration of the main user flows.
+
+## Author
+
+**Atanas Uluchev**
+
+- GitHub: [nasko017](https://github.com/nasko017)
+- Project: [PhoneXchange](https://github.com/nasko017/ASP.NET-Core-2025)
